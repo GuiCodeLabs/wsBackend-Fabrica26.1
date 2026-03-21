@@ -4,7 +4,8 @@
     <title>{{ game.title }}</title>
 </head>
 <body>
-
+    <a href="{% url 'games:update_game' game.id %}">Editar</a>
+    
     <h1>{{ game.title }}</h1>
 
     <p>{{ game.description }}</p>

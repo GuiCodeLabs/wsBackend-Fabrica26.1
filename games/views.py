@@ -22,3 +22,17 @@ def create_game(request):
 
     return render(request, 'games/create_game.html', {'form': form})
 
+def update_game(request, id):
+    game = get_object_or_404(Game, id=id)
+
+    if request.method == 'POST':
+        form =GameForm(request.POST, instance=game)
+        if form.is_valid():
+            form.save()
+            return redirect('games:game_list') 
+            
+    else:
+        form = GameForm(instance=game)
+    
+    return render(request, 'games/update_game.html', {'form': form})
+
