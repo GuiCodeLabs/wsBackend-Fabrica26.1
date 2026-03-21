@@ -5,7 +5,7 @@
 </head>
 <body>
     <a href="{% url 'games:update_game' game.id %}">Editar</a>
-    
+    <a href="{% url 'games:delete_game' game.id %}">Deletar</a>
     <h1>{{ game.title }}</h1>
 
     <p>{{ game.description }}</p>
@@ -16,6 +16,7 @@
 
     <p>Release date: {{ game.release_date }}</p>
 
+    
     <a href="/">Voltar</a>
 
 </body>
