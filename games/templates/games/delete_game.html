@@ -7,7 +7,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 
-    <title>Delete Game</title>
+    <title>Excluir Jogo</title>
 
     <script>
       tailwind.config = {
@@ -59,8 +59,8 @@
     <div class="flex items-center gap-8">
         <span class="text-2xl font-bold tracking-tighter text-[#b6a0ff] uppercase font-['Space_Grotesk']">MyGameList</span>
         <div class="hidden md:flex items-center gap-6">
-            <a class="text-[#adaaaa] hover:text-white transition-colors" href="{% url 'games:game_list' %}">Library</a>
-            <a class="text-[#adaaaa] hover:text-white transition-colors" href="{% url 'games:search_games' %}">Discover</a>
+            <a class="text-[#adaaaa] hover:text-white transition-colors" href="{% url 'games:game_list' %}">Biblioteca</a>
+            <a class="text-[#adaaaa] hover:text-white transition-colors" href="{% url 'games:search_games' %}">Descobrir</a>
         </div>
     </div>
 
@@ -86,13 +86,13 @@
                     <span class="material-symbols-outlined text-error text-4xl">delete_forever</span>
                 </div>
 
-                <p class="font-headline text-on-surface-variant uppercase tracking-widest text-xs mb-2">Vault Management</p>
+                <p class="font-headline text-on-surface-variant uppercase tracking-widest text-xs mb-2">Gerenciamento</p>
                 <h1 class="font-headline text-4xl md:text-5xl font-bold tracking-tight mb-6">{{ game.title }}</h1>
 
                 <div class="max-w-md mx-auto">
                     <p class="text-on-surface-variant text-lg leading-relaxed mb-10 font-light">
-                        Are you sure you want to remove this title from your vault?
-                        <span class="text-error font-medium">This action cannot be undone.</span>
+                        Tem certeza que deseja remover este jogo da sua coleção?
+                        <span class="text-error font-medium">Esta ação não pode ser desfeita.</span>
                     </p>
                 </div>
 
@@ -102,7 +102,7 @@
                             <img src="{{ game.image }}" alt="{{ game.title }}" class="w-full h-full object-cover"/>
                         {% else %}
                             <div class="w-full h-full bg-surface-container-highest flex items-center justify-center text-xs text-on-surface-variant">
-                                No image
+                                Sem imagem
                             </div>
                         {% endif %}
                     </div>
@@ -110,9 +110,9 @@
                     <div>
                         <p class="font-headline font-bold text-on-surface">{{ game.title }}</p>
                         {% if game.release_date %}
-                            <p class="text-xs text-on-surface-variant uppercase tracking-wider">Released {{ game.release_date }}</p>
+                            <p class="text-xs text-on-surface-variant uppercase tracking-wider">Lançado {{ game.release_date }}</p>
                         {% else %}
-                            <p class="text-xs text-on-surface-variant uppercase tracking-wider">Release date unavailable</p>
+                            <p class="text-xs text-on-surface-variant uppercase tracking-wider">Data indisponível</p>
                         {% endif %}
                     </div>
                 </div>
@@ -121,11 +121,11 @@
                     {% csrf_token %}
 
                     <a href="{% url 'games:game_detail' game.id %}" class="flex-1 max-w-[240px] px-8 py-4 rounded-full font-headline font-bold uppercase tracking-wider text-sm transition-all duration-300 hover:scale-105 active:scale-95 bg-surface-container-highest border border-outline-variant/20 hover:bg-surface-bright text-on-surface text-center">
-                        Cancel
+                        Cancelar
                     </a>
 
                     <button type="submit" class="flex-1 max-w-[240px] px-8 py-4 rounded-full font-headline font-bold uppercase tracking-wider text-sm destructive-gradient text-white transition-all duration-300 hover:scale-105 active:scale-95 shadow-[0_0_20px_rgba(215,51,87,0.2)] hover:shadow-[0_0_30px_rgba(215,51,87,0.4)]">
-                        Confirm Deletion
+                        Confirmar Exclusão
                     </button>
                 </form>
             </div>
@@ -138,11 +138,11 @@
         <span class="text-lg font-black text-[#adaaaa] uppercase tracking-widest">MyGameList</span>
 
         <div class="flex flex-wrap justify-center gap-8">
-            <a class="text-[#adaaaa] text-xs uppercase tracking-widest hover:text-[#00e3fd] transition-colors opacity-80 hover:opacity-100" href="{% url 'games:game_list' %}">Library</a>
-            <a class="text-[#adaaaa] text-xs uppercase tracking-widest hover:text-[#00e3fd] transition-colors opacity-80 hover:opacity-100" href="{% url 'games:search_games' %}">Discover</a>
+            <a class="text-[#adaaaa] text-xs uppercase tracking-widest hover:text-[#00e3fd] transition-colors opacity-80 hover:opacity-100" href="{% url 'games:game_list' %}">Biblioteca</a>
+            <a class="text-[#adaaaa] text-xs uppercase tracking-widest hover:text-[#00e3fd] transition-colors opacity-80 hover:opacity-100" href="{% url 'games:search_games' %}">Descobrir</a>
         </div>
 
-        <p class="text-[#adaaaa] text-xs uppercase tracking-widest opacity-60">Your digital vault.</p>
+        <p class="text-[#adaaaa] text-xs uppercase tracking-widest opacity-60">Seu cofre digital.</p>
     </div>
 </footer>
 

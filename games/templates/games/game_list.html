@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-    <title>MyGameList - Your Library</title>
+    <title>MyGameList - Sua Biblioteca</title>
 
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
@@ -100,10 +100,10 @@
 
             <div class="hidden md:flex gap-8 items-center h-full">
                 <a class="font-['Space_Grotesk'] tracking-tight text-violet-400 border-b-2 border-violet-500 pb-1 transition-all" href="{% url 'games:game_list' %}">
-                    Library
+                    Biblioteca
                 </a>
                 <a class="font-['Space_Grotesk'] tracking-tight text-zinc-400 hover:text-zinc-100 transition-colors" href="{% url 'games:search_games' %}">
-                    Discover
+                    Descobrir
                 </a>
             </div>
         </div>
@@ -120,42 +120,108 @@
     </nav>
 
     <main class="pt-32 pb-24 px-8 md:px-12 max-w-[1600px] mx-auto">
+        
+        <!-- DASHBOARD & STATS -->
+        <section class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 mb-12">
+            <div class="bg-surface-container-low p-6 rounded-xl border border-white/5">
+                <p class="text-zinc-400 text-xs uppercase tracking-wider font-bold mb-1">Total de Jogos</p>
+                <p class="text-4xl font-headline font-bold text-white" id="stat-total">0</p>
+            </div>
+            <div class="bg-surface-container-low p-6 rounded-xl border border-secondary/20 relative overflow-hidden group">
+                <div class="absolute right-0 top-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                    <span class="material-symbols-outlined text-4xl">sports_esports</span>
+                </div>
+                <p class="text-secondary text-xs uppercase tracking-wider font-bold mb-1">Jogando</p>
+                <p class="text-4xl font-headline font-bold text-white" id="stat-playing">0</p>
+            </div>
+            <div class="bg-surface-container-low p-6 rounded-xl border border-green-500/20 relative overflow-hidden group">
+                 <div class="absolute right-0 top-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                    <span class="material-symbols-outlined text-4xl">emoji_events</span>
+                </div>
+                <p class="text-green-400 text-xs uppercase tracking-wider font-bold mb-1">Zerados</p>
+                <p class="text-4xl font-headline font-bold text-white" id="stat-completed">0</p>
+            </div>
+            <div class="bg-surface-container-low p-6 rounded-xl border border-orange-500/20 relative overflow-hidden group">
+                 <div class="absolute right-0 top-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                    <span class="material-symbols-outlined text-4xl">bookmark</span>
+                </div>
+                <p class="text-orange-400 text-xs uppercase tracking-wider font-bold mb-1">Na Lista</p>
+                <p class="text-4xl font-headline font-bold text-white" id="stat-backlog">0</p>
+            </div>
+            <div class="bg-surface-container-low p-6 rounded-xl border border-red-500/20 relative overflow-hidden group">
+                 <div class="absolute right-0 top-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                    <span class="material-symbols-outlined text-4xl">block</span>
+                </div>
+                <p class="text-red-400 text-xs uppercase tracking-wider font-bold mb-1">Largado</p>
+                <p class="text-4xl font-headline font-bold text-white" id="stat-dropped">0</p>
+            </div>
+        </section>
+
+        <!-- FILTER TABS -->
+        <div class="flex flex-wrap gap-2 mb-8" id="filter-container">
+            <button class="filter-btn active px-4 py-2 rounded-full text-sm font-bold bg-white text-black transition-colors" data-filter="all">Todos</button>
+            <button class="filter-btn px-4 py-2 rounded-full text-sm font-bold bg-surface-container-highest text-zinc-400 hover:text-white transition-colors border border-transparent hover:border-secondary/20" data-filter="playing">Jogando</button>
+            <button class="filter-btn px-4 py-2 rounded-full text-sm font-bold bg-surface-container-highest text-zinc-400 hover:text-white transition-colors border border-transparent hover:border-green-400/20" data-filter="completed">Zerados</button>
+            <button class="filter-btn px-4 py-2 rounded-full text-sm font-bold bg-surface-container-highest text-zinc-400 hover:text-white transition-colors border border-transparent hover:border-orange-400/20" data-filter="backlog">Na Lista</button>
+            <button class="filter-btn px-4 py-2 rounded-full text-sm font-bold bg-surface-container-highest text-zinc-400 hover:text-white transition-colors border border-transparent hover:border-red-400/20" data-filter="dropped">Largado</button>
+        </div>
+
         <header class="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-16">
             <div class="space-y-2">
                 <h1 class="font-headline text-6xl font-bold tracking-tighter text-on-surface">
-                    Your Library
+                    Sua Biblioteca
                 </h1>
                 <p class="text-on-surface-variant text-lg max-w-xl">
-                    Managing <span class="text-primary font-medium">{{ games|length }}</span> games in your digital vault.
+                    Gerenciando <span class="text-primary font-medium">{{ games|length }}</span> jogos no seu cofre digital.
                 </p>
             </div>
 
             <div class="flex flex-wrap items-center gap-4">
                 <a href="{% url 'games:search_games' %}" class="flex items-center gap-2 bg-surface-container-highest px-6 py-3 rounded-full hover:bg-surface-bright transition-all border border-outline-variant/10">
                     <span class="material-symbols-outlined text-secondary">search</span>
-                    <span class="font-label text-sm uppercase tracking-wider">Search Games</span>
+                    <span class="font-label text-sm uppercase tracking-wider">Buscar Jogos</span>
                 </a>
 
                 <a href="{% url 'games:create_game' %}" class="flex items-center gap-2 bg-gradient-to-br from-primary to-primary-dim px-8 py-3 rounded-full text-on-primary-fixed font-bold hover:shadow-[0_0_20px_rgba(182,160,255,0.3)] transition-all active:scale-95 duration-200">
                     <span class="material-symbols-outlined">add</span>
-                    <span>Add New Game</span>
+                    <span>Novo Jogo</span>
                 </a>
             </div>
         </header>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
             {% for game in games %}
-                <div class="group relative bg-surface-container-low rounded-xl overflow-hidden hover:bg-surface-container-high transition-all duration-500">
+                <div class="game-card group relative bg-surface-container-low rounded-xl overflow-hidden hover:bg-surface-container-high transition-all duration-500" data-status="{{ game.status|default:'backlog' }}">
                     <div class="aspect-[3/4] overflow-hidden relative">
                         {% if game.image %}
                             <img src="{{ game.image }}" alt="{{ game.title }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
                         {% else %}
                             <div class="w-full h-full bg-surface-container-highest flex items-center justify-center text-on-surface-variant">
-                                No Image
+                                Sem Imagem
                             </div>
                         {% endif %}
 
                         <div class="absolute inset-0 bg-gradient-to-t from-surface-container-low via-transparent to-transparent opacity-60"></div>
+                        
+                        <div class="absolute top-3 right-3 flex flex-col items-end gap-2">
+                            {% if game.status == 'playing' %}
+                                <span class="px-2 py-1 rounded-md bg-black/60 backdrop-blur-md text-secondary text-[10px] uppercase font-bold tracking-wider border border-secondary/20">Jogando</span>
+                            {% elif game.status == 'completed' %}
+                                <span class="px-2 py-1 rounded-md bg-black/60 backdrop-blur-md text-green-400 text-[10px] uppercase font-bold tracking-wider border border-green-400/20">Zerado</span>
+                            {% elif game.status == 'backlog' %}
+                                <span class="px-2 py-1 rounded-md bg-black/60 backdrop-blur-md text-orange-400 text-[10px] uppercase font-bold tracking-wider border border-orange-400/20">Na Lista</span>
+                            {% elif game.status == 'dropped' %}
+                                <span class="px-2 py-1 rounded-md bg-black/60 backdrop-blur-md text-red-400 text-[10px] uppercase font-bold tracking-wider border border-red-400/20">Largado</span>
+                            {% endif %}
+
+                            {% if game.personal_rating %}
+                            <div class="flex items-center gap-1 px-2 py-1 rounded-md bg-black/60 backdrop-blur-md border border-yellow-500/20">
+                                <span class="material-symbols-outlined text-[14px] text-yellow-400" style="font-variation-settings: 'FILL' 1;">star</span>
+                                <span class="text-xs font-bold text-white">{{ game.personal_rating }}</span>
+                            </div>
+                            {% endif %}
+                        </div>
+
                     </div>
 
                     <div class="p-6 space-y-4">
@@ -166,16 +232,16 @@
 
                             <p class="font-label text-xs uppercase tracking-widest text-on-surface-variant">
                                 {% if game.release_date %}
-                                    Released: {{ game.release_date }}
+                                    Lançamento: {{ game.release_date }}
                                 {% else %}
-                                    Release date unavailable
+                                    Data não disponível
                                 {% endif %}
                             </p>
                         </div>
 
                         <div class="flex items-center gap-2">
                             <a href="{% url 'games:game_detail' game.id %}" class="flex-1 bg-surface-container-highest hover:bg-surface-bright py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition-colors text-center">
-                                Details
+                                Detalhes
                             </a>
 
                             <a href="{% url 'games:update_game' game.id %}" class="p-2 bg-surface-container-highest hover:bg-surface-bright rounded-lg transition-colors">
@@ -190,14 +256,14 @@
                 </div>
             {% empty %}
                 <div class="col-span-full text-center py-16 bg-surface-container-low rounded-xl">
-                    <h2 class="font-headline text-3xl font-bold mb-4">No games yet</h2>
-                    <p class="text-on-surface-variant mb-6">Start building your library by adding a new game or searching through the API.</p>
+                    <h2 class="font-headline text-3xl font-bold mb-4">Nenhum jogo ainda</h2>
+                    <p class="text-on-surface-variant mb-6">Comece sua biblioteca adicionando um jogo manualmente ou buscando na API.</p>
                     <div class="flex justify-center gap-4 flex-wrap">
                         <a href="{% url 'games:create_game' %}" class="px-6 py-3 rounded-full bg-gradient-to-br from-primary to-primary-dim text-on-primary-fixed font-bold">
-                            Add New Game
+                            Adicionar Jogo
                         </a>
                         <a href="{% url 'games:search_games' %}" class="px-6 py-3 rounded-full bg-surface-container-highest hover:bg-surface-bright transition-colors">
-                            Search Games
+                            Buscar Jogos
                         </a>
                     </div>
                 </div>
@@ -209,19 +275,74 @@
         <div class="mb-8 md:mb-0">
             <span class="text-lg font-bold text-zinc-100 block mb-2">MyGameList</span>
             <p class="font-['Inter'] text-xs uppercase tracking-widest text-zinc-500">
-                Your personal game library.
+                Sua biblioteca de jogos pessoal.
             </p>
         </div>
 
         <div class="flex flex-wrap justify-center gap-8">
             <a class="font-['Inter'] text-xs uppercase tracking-widest text-zinc-500 hover:text-violet-400 transition-colors opacity-80 hover:opacity-100" href="{% url 'games:game_list' %}">
-                Library
+                Biblioteca
             </a>
             <a class="font-['Inter'] text-xs uppercase tracking-widest text-zinc-500 hover:text-violet-400 transition-colors opacity-80 hover:opacity-100" href="{% url 'games:search_games' %}">
-                Discover
+                Descobrir
             </a>
         </div>
     </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const cards = document.querySelectorAll('.game-card');
+            const stats = {
+                total: cards.length,
+                playing: 0,
+                completed: 0,
+                backlog: 0,
+                dropped: 0
+            };
+
+            // Calculate Stats
+            cards.forEach(card => {
+                const status = card.dataset.status;
+                if (status === 'playing') stats.playing++;
+                else if (status === 'completed') stats.completed++;
+                else if (status === 'backlog') stats.backlog++;
+                else if (status === 'dropped') stats.dropped++;
+            });
+
+            // Update Dashboard
+            document.getElementById('stat-total').innerText = stats.total;
+            document.getElementById('stat-playing').innerText = stats.playing;
+            document.getElementById('stat-completed').innerText = stats.completed;
+            document.getElementById('stat-backlog').innerText = stats.backlog;
+            document.getElementById('stat-dropped').innerText = stats.dropped;
+
+            // Filter Logic
+            const buttons = document.querySelectorAll('.filter-btn');
+            
+            buttons.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    // Remove active class from all
+                    buttons.forEach(b => {
+                        b.classList.remove('bg-white', 'text-black');
+                        b.classList.add('bg-surface-container-highest', 'text-zinc-400');
+                    });
+                    // Add active class to clicked
+                    btn.classList.remove('bg-surface-container-highest', 'text-zinc-400');
+                    btn.classList.add('bg-white', 'text-black');
+
+                    const filter = btn.dataset.filter;
+                    
+                    cards.forEach(card => {
+                        if (filter === 'all' || card.dataset.status === filter) {
+                            card.style.display = 'block';
+                        } else {
+                            card.style.display = 'none';
+                        }
+                    });
+                });
+            });
+        });
+    </script>
 
 </body>
 </html>

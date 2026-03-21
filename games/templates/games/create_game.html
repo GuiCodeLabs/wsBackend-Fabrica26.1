@@ -9,7 +9,11 @@
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
 
-    <title>Create Game</title>
+    <title>Adicionar Jogo</title>
+    <style>
+        .star-btn:hover, .star-btn.active { font-variation-settings: 'FILL' 1; color: #fbbf24; }
+        .star-btn { font-variation-settings: 'FILL' 0; transition: all 0.2s; cursor: pointer; color: #52525b; }
+    </style>
 </head>
 
 <body class="bg-black text-white font-body min-h-screen">
@@ -19,16 +23,16 @@
     <div class="text-xl font-bold text-violet-400">MyGameList</div>
 
     <div class="flex gap-6">
-        <a href="{% url 'games:game_list' %}">Library</a>
-        <a href="{% url 'games:search_games' %}">Discover</a>
+        <a href="{% url 'games:game_list' %}">Biblioteca</a>
+        <a href="{% url 'games:search_games' %}">Descobrir</a>
     </div>
 </nav>
 
 <main class="pt-32 px-6 max-w-2xl mx-auto">
 
 <header class="mb-10">
-    <h1 class="text-4xl font-bold">Add New Game</h1>
-    <p class="text-zinc-400">Add a game manually to your library</p>
+    <h1 class="text-4xl font-bold">Adicionar Novo Jogo</h1>
+    <p class="text-zinc-400">Adicione um jogo manualmente à sua coleção</p>
 </header>
 
 <!-- FORM -->
@@ -37,47 +41,108 @@
 
     <!-- TITLE -->
     <div>
-        <label class="block text-sm mb-2">Title</label>
+        <label class="block text-sm mb-2">Título</label>
         <input type="text" name="title" value="{{ form.title.value|default:'' }}"
                class="w-full p-3 bg-zinc-800 rounded-lg outline-none">
     </div>
 
     <!-- RELEASE DATE -->
     <div>
-        <label class="block text-sm mb-2">Release Date</label>
+        <label class="block text-sm mb-2">Data de Lançamento</label>
         <input type="date" name="release_date" value="{{ form.release_date.value|default:'' }}"
                class="w-full p-3 bg-zinc-800 rounded-lg">
     </div>
 
     <!-- IMAGE -->
     <div>
-        <label class="block text-sm mb-2">Image URL</label>
+        <label class="block text-sm mb-2">URL da Imagem</label>
         <input type="url" name="image" value="{{ form.image.value|default:'' }}"
                class="w-full p-3 bg-zinc-800 rounded-lg">
     </div>
 
     <!-- DESCRIPTION -->
     <div>
-        <label class="block text-sm mb-2">Description</label>
+        <label class="block text-sm mb-2">Descrição</label>
         <textarea name="description"
                   class="w-full p-3 bg-zinc-800 rounded-lg">{{ form.description.value|default:'' }}</textarea>
+    </div>
+
+    <div class="grid grid-cols-2 gap-4">
+        <!-- STATUS -->
+        <div>
+            <label class="block text-sm mb-2">Status</label>
+            <select name="status" class="w-full p-3 bg-zinc-800 rounded-lg outline-none text-white appearance-none">
+                <option value="backlog" {% if form.status.value == 'backlog' %}selected{% endif %}>Na Lista</option>
+                <option value="playing" {% if form.status.value == 'playing' %}selected{% endif %}>Jogando</option>
+                <option value="completed" {% if form.status.value == 'completed' %}selected{% endif %}>Zerado</option>
+                <option value="dropped" {% if form.status.value == 'dropped' %}selected{% endif %}>Largado</option>
+            </select>
+        </div>
+
+        <!-- RATING -->
+        <div>
+            <label class="block text-sm mb-2">Sua Nota</label>
+            <input type="hidden" name="personal_rating" id="rating-input" value="{{ form.personal_rating.value|default:'' }}">
+            <div class="flex gap-2 text-3xl" id="star-container">
+                <span class="material-symbols-outlined star-btn" data-value="1">star</span>
+                <span class="material-symbols-outlined star-btn" data-value="2">star</span>
+                <span class="material-symbols-outlined star-btn" data-value="3">star</span>
+                <span class="material-symbols-outlined star-btn" data-value="4">star</span>
+                <span class="material-symbols-outlined star-btn" data-value="5">star</span>
+            </div>
+        </div>
     </div>
 
     <!-- BUTTONS -->
     <div class="flex gap-4">
         <button type="submit"
                 class="flex-1 bg-violet-500 py-3 rounded-lg font-bold hover:opacity-90">
-            Save Game
+            Salvar Jogo
         </button>
 
         <a href="{% url 'games:game_list' %}"
            class="flex-1 text-center bg-zinc-700 py-3 rounded-lg">
-            Cancel
+            Cancelar
         </a>
     </div>
 
 </form>
 
 </main>
+
+<script>
+    const stars = document.querySelectorAll('.star-btn');
+    const ratingInput = document.getElementById('rating-input');
+    let currentRating = ratingInput.value || 0;
+
+    function updateStars(value) {
+        stars.forEach(star => {
+            if (parseInt(star.dataset.value) <= value) {
+                star.classList.add('active');
+            } else {
+                star.classList.remove('active');
+            }
+        });
+    }
+
+    // Init
+    updateStars(currentRating);
+
+    stars.forEach(star => {
+        star.addEventListener('click', () => {
+            currentRating = star.dataset.value;
+            ratingInput.value = currentRating;
+            updateStars(currentRating);
+        });
+
+        star.addEventListener('mouseenter', () => {
+            updateStars(star.dataset.value);
+        });
+
+        star.addEventListener('mouseleave', () => {
+            updateStars(currentRating);
+        });
+    });
+</script>
 </body>
 </html>

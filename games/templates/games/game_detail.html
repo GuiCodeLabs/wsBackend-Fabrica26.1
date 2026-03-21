@@ -101,10 +101,10 @@
 
         <div class="hidden md:flex items-center gap-8 font-['Space_Grotesk'] tracking-tight">
             <a href="{% url 'games:game_list' %}" class="text-zinc-400 hover:text-zinc-100 transition-colors hover:bg-zinc-800/50 rounded-lg px-3 py-2">
-                Library
+                Biblioteca
             </a>
             <a href="{% url 'games:search_games' %}" class="text-zinc-400 hover:text-zinc-100 transition-colors hover:bg-zinc-800/50 rounded-lg px-3 py-2">
-                Discover
+                Descobrir
             </a>
         </div>
 
@@ -122,7 +122,7 @@
         <div class="mb-8">
             <a href="{% url 'games:game_list' %}" class="inline-flex items-center gap-2 text-zinc-400 hover:text-white transition-colors">
                 <span class="material-symbols-outlined text-sm">arrow_back</span>
-                Back to Library
+                Voltar para Biblioteca
             </a>
         </div>
 
@@ -132,7 +132,7 @@
                     <img src="{{ game.image }}" alt="{{ game.title }}" class="w-full h-[500px] object-cover"/>
                 {% else %}
                     <div class="w-full h-[500px] bg-surface-container-highest flex items-center justify-center text-on-surface-variant text-xl">
-                        No Image Available
+                        Sem Imagem
                     </div>
                 {% endif %}
             </div>
@@ -140,7 +140,7 @@
             <div class="space-y-8">
                 <div>
                     <p class="text-sm uppercase tracking-[0.3em] text-on-surface-variant mb-3">
-                        Game Details
+                        Detalhes do Jogo
                     </p>
 
                     <h1 class="font-headline text-5xl md:text-6xl font-bold tracking-tighter leading-none mb-4">
@@ -150,7 +150,25 @@
                     <div class="flex flex-wrap gap-3">
                         {% if game.release_date %}
                             <span class="px-4 py-2 rounded-full bg-surface-container-high text-sm text-on-surface-variant">
-                                Released: {{ game.release_date }}
+                                📅 {{ game.release_date }}
+                            </span>
+                        {% endif %}
+
+                        {% if game.status %}
+                            <span class="px-4 py-2 rounded-full border border-white/10 text-sm font-bold uppercase tracking-wide
+                                {% if game.status == 'playing' %}text-secondary bg-secondary/10 border-secondary/20
+                                {% elif game.status == 'completed' %}text-green-400 bg-green-400/10 border-green-400/20
+                                {% elif game.status == 'backlog' %}text-orange-400 bg-orange-400/10 border-orange-400/20
+                                {% elif game.status == 'dropped' %}text-red-400 bg-red-400/10 border-red-400/20
+                                {% else %}text-zinc-400 bg-zinc-800{% endif %}">
+                                {{ game.get_status_display }}
+                            </span>
+                        {% endif %}
+
+                        {% if game.personal_rating %}
+                            <span class="px-4 py-2 rounded-full bg-yellow-500/10 border border-yellow-500/20 text-sm text-yellow-400 font-bold flex items-center gap-1">
+                                <span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+                                {{ game.personal_rating }}/5
                             </span>
                         {% endif %}
 
@@ -163,7 +181,7 @@
                 </div>
 
                 <div class="bg-surface-container-low rounded-2xl p-6">
-                    <h2 class="font-headline text-2xl font-bold mb-4">Description</h2>
+                    <h2 class="font-headline text-2xl font-bold mb-4">Descrição</h2>
 
                     {% if game.description %}
                         <p class="text-on-surface-variant leading-8 text-base">
@@ -171,28 +189,48 @@
                         </p>
                     {% else %}
                         <p class="text-on-surface-variant leading-8 text-base">
-                            No description available for this game.
+                            Nenhuma descrição disponível.
                         </p>
                     {% endif %}
                 </div>
 
-                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div class="bg-surface-container-low rounded-2xl p-6">
+                    <h2 class="font-headline text-2xl font-bold mb-4">Análises</h2>
+
+                    {% for review in game.reviews.all %}
+                        <div class="mb-4">
+                            <p class="text-primary font-bold mb-1">⭐ {{ review.rating }}/5</p>
+                            <p class="text-on-surface-variant">{{ review.comment }}</p>
+                        </div>
+                        {% if not forloop.last %}<hr class="border-zinc-800 mb-4">{% endif %}
+                    {% empty %}
+                        <p class="text-zinc-500">Nenhuma análise ainda</p>
+                    {% endfor %}
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                     <a href="{% url 'games:update_game' game.id %}"
                        class="flex items-center justify-center gap-2 px-6 py-4 rounded-xl bg-gradient-to-br from-primary to-primary-dim text-on-primary-fixed font-bold hover:shadow-[0_0_20px_rgba(182,160,255,0.4)] transition-all active:scale-95">
                         <span class="material-symbols-outlined">edit</span>
-                        Edit
+                        Editar
+                    </a>
+
+                    <a href="{% url 'games:add_review' game.id %}"
+                       class="flex items-center justify-center gap-2 px-6 py-4 rounded-xl bg-surface-container-high hover:bg-surface-bright text-white transition-colors">
+                        <span class="material-symbols-outlined">rate_review</span>
+                        Avaliar
                     </a>
 
                     <a href="{% url 'games:delete_game' game.id %}"
                        class="flex items-center justify-center gap-2 px-6 py-4 rounded-xl bg-surface-container-high hover:bg-red-500/20 text-white transition-colors">
                         <span class="material-symbols-outlined">delete</span>
-                        Delete
+                        Excluir
                     </a>
 
                     <a href="{% url 'games:game_list' %}"
                        class="flex items-center justify-center gap-2 px-6 py-4 rounded-xl bg-surface-container-high hover:bg-surface-bright text-white transition-colors">
                         <span class="material-symbols-outlined">home</span>
-                        Library
+                        Início
                     </a>
                 </div>
             </div>
@@ -205,12 +243,12 @@
             <div class="text-lg font-black text-zinc-100 font-headline">MyGameList</div>
 
             <div class="flex gap-8 font-['Inter'] text-sm tracking-wide">
-                <a class="text-zinc-500 hover:text-violet-300 transition-colors" href="{% url 'games:game_list' %}">Library</a>
-                <a class="text-zinc-500 hover:text-violet-300 transition-colors" href="{% url 'games:search_games' %}">Discover</a>
+                <a class="text-zinc-500 hover:text-violet-300 transition-colors" href="{% url 'games:game_list' %}">Biblioteca</a>
+                <a class="text-zinc-500 hover:text-violet-300 transition-colors" href="{% url 'games:search_games' %}">Descobrir</a>
             </div>
 
             <div class="text-zinc-500 font-['Inter'] text-sm tracking-wide">
-                Your personal game library.
+                Seu cofre digital de jogos.
             </div>
         </div>
     </footer>

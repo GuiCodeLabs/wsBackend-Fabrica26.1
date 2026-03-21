@@ -9,38 +9,89 @@
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
 
-    <title>Search Games</title>
+    <script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "surface-container-low": "#131313",
+              "surface-container-high": "#20201f",
+              "surface-container-highest": "#262626",
+              "surface-bright": "#2c2c2c",
+              "primary": "#b6a0ff",
+              "primary-dim": "#7e51ff",
+              "on-primary-fixed": "#000000",
+              "secondary": "#00e3fd",
+              "on-surface": "#ffffff",
+              "on-surface-variant": "#adaaaa",
+            },
+            fontFamily: {
+              "headline": ["Space Grotesk"],
+              "body": ["Inter"],
+            }
+          }
+        }
+      }
+    </script>
+
+    <title>Buscar Jogos</title>
+
+    <style>
+        .glass-input {
+            background: rgba(38, 38, 38, 0.6);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .glass-input:focus-within {
+            border-color: #b6a0ff;
+            box-shadow: 0 0 15px rgba(182, 160, 255, 0.2);
+        }
+        .game-card-hover:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 40px -10px rgba(0,0,0,0.5);
+        }
+        .game-card-hover:hover .game-img {
+            transform: scale(1.05);
+        }
+    </style>
 </head>
 
-<body class="bg-background text-on-background font-body">
+<body class="bg-[#0e0e0e] text-on-surface font-body min-h-screen flex flex-col">
 
 <!-- NAV -->
 <nav class="fixed top-0 w-full z-50 bg-zinc-950/80 backdrop-blur-xl flex justify-between items-center px-8 h-20">
-    <div class="text-2xl font-bold text-violet-500">MyGameList</div>
+    <div class="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-violet-400 to-violet-600 font-headline">MyGameList</div>
 
     <div class="flex gap-6">
-        <a href="{% url 'games:game_list' %}" class="text-zinc-400 hover:text-white">Library</a>
-        <a href="{% url 'games:search_games' %}" class="text-violet-400">Discover</a>
+        <a href="{% url 'games:game_list' %}" class="text-zinc-400 hover:text-white">Biblioteca</a>
+        <a href="{% url 'games:search_games' %}" class="text-violet-400">Descobrir</a>
     </div>
 </nav>
 
-<main class="pt-32 px-8 max-w-6xl mx-auto">
+<main class="pt-32 px-8 max-w-[1600px] mx-auto flex-grow w-full">
+
+<header class="mb-12 text-center max-w-2xl mx-auto">
+    <h1 class="font-headline text-5xl font-bold mb-4">Descubra Novos Jogos</h1>
+    <p class="text-on-surface-variant">Pesquise em uma base de dados global e adicione diretamente ao seu cofre.</p>
+</header>
 
 <!-- 🔥 SEARCH FORM -->
-<form method="get" class="mb-12">
-    <div class="flex items-center bg-zinc-800 rounded-xl px-4 py-3">
+<form method="get" class="mb-16 max-w-2xl mx-auto">
+    <div class="flex items-center glass-input rounded-full px-6 py-4 transition-all duration-300">
         <span class="material-symbols-outlined text-zinc-400">search</span>
 
         <input
             type="text"
             name="q"
             value="{{ request.GET.q }}"
-            placeholder="Search games..."
-            class="w-full bg-transparent px-4 outline-none text-white"
+            placeholder="Buscar jogos..."
+            class="w-full bg-transparent px-4 outline-none text-white text-lg placeholder:text-zinc-600"
+            autocomplete="off"
         >
 
-        <button type="submit" class="text-sm bg-violet-500 px-4 py-2 rounded-lg">
-            Search
+        <button type="submit" class="text-sm bg-primary text-black font-bold px-6 py-2 rounded-full hover:bg-primary-dim hover:text-white transition-all">
+            Buscar
         </button>
     </div>
 </form>
@@ -49,21 +100,28 @@
 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
 
     {% for game in games %}
-    <div class="bg-zinc-900 rounded-xl overflow-hidden">
-
+    <div class="bg-surface-container-low rounded-xl overflow-hidden game-card-hover transition-all duration-300 border border-white/5 flex flex-col h-full">
+        
+        <div class="aspect-video overflow-hidden relative bg-surface-container-highest">
         {% if game.background_image %}
-            <img src="{{ game.background_image }}" class="w-full h-64 object-cover">
+            <img src="{{ game.background_image }}" class="w-full h-full object-cover game-img transition-transform duration-700">
+        {% else %}
+            <div class="w-full h-full flex items-center justify-center text-zinc-600">
+                <span class="material-symbols-outlined text-4xl">image_not_supported</span>
+            </div>
         {% endif %}
+        <div class="absolute inset-0 bg-gradient-to-t from-surface-container-low to-transparent opacity-80"></div>
+        </div>
 
-        <div class="p-4">
-            <h3 class="font-bold text-lg">{{ game.name }}</h3>
+        <div class="p-6 flex flex-col flex-grow">
+            <h3 class="font-headline font-bold text-xl mb-1 leading-tight">{{ game.name }}</h3>
 
-            <p class="text-sm text-zinc-400">
-                {{ game.released }}
+            <p class="text-xs uppercase tracking-widest text-secondary font-bold mb-6">
+                {{ game.released|default:"Data Desc." }}
             </p>
 
             <!-- 🔥 SAVE BUTTON -->
-            <form method="post" action="{% url 'games:save_api_game' %}">
+            <form method="post" action="{% url 'games:save_api_game' %}" class="mt-auto">
                 {% csrf_token %}
 
                 <input type="hidden" name="title" value="{{ game.name }}">
@@ -72,9 +130,19 @@
                 <input type="hidden" name="api_id" value="{{ game.id }}">
                 <input type="hidden" name="description" value="Game from API">
 
-                <button class="mt-4 w-full bg-violet-500 py-2 rounded-lg">
-                    Save
-                </button>
+                <div class="flex gap-2">
+                    <select name="status" class="w-[40%] bg-surface-container-highest text-xs rounded-lg outline-none border border-white/10 text-zinc-300 px-2">
+                        <option value="backlog">Na Lista</option>
+                        <option value="playing">Jogando</option>
+                        <option value="completed">Zerado</option>
+                        <option value="dropped">Largado</option>
+                    </select>
+
+                    <button class="flex-1 bg-white/5 hover:bg-white/10 border border-white/10 text-white transition-colors py-3 rounded-lg font-bold text-sm flex items-center justify-center gap-2 group">
+                        <span class="material-symbols-outlined text-lg group-hover:text-primary transition-colors">download</span>
+                        Salvar
+                    </button>
+                </div>
             </form>
 
         </div>
@@ -82,7 +150,7 @@
 
     {% empty %}
         <p class="col-span-full text-center text-zinc-400">
-            Search for a game to begin
+            Pesquise por um jogo para começar
         </p>
     {% endfor %}
 

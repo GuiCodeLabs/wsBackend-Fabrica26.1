@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+    <title>Avaliar {{ game.title }}</title>
+    <style>
+        .star-btn:hover, .star-btn.active { font-variation-settings: 'FILL' 1; color: #fbbf24; }
+        .star-btn { font-variation-settings: 'FILL' 0; transition: all 0.2s; cursor: pointer; color: #52525b; }
+    </style>
+</head>
+
+<body class="bg-black text-white font-body min-h-screen">
+
+<nav class="fixed top-0 w-full z-50 flex justify-between items-center px-6 h-16 bg-zinc-900">
+    <div class="text-xl font-bold text-violet-400">MyGameList</div>
+    <div class="flex gap-6">
+        <a href="{% url 'games:game_list' %}">Biblioteca</a>
+    </div>
+</nav>
+
+<main class="pt-32 px-6 max-w-xl mx-auto">
+
+<header class="mb-10">
+    <h1 class="text-3xl font-bold">Avaliar Jogo</h1>
+    <p class="text-zinc-400">O que você achou de {{ game.title }}?</p>
+</header>
+
+<form method="post" class="space-y-6">
+    {% csrf_token %}
+
+    <!-- RATING STARS -->
+    <div>
+        <label class="block text-sm mb-2">Nota (Estrelas)</label>
+        <input type="hidden" name="rating" id="review-rating" value="5">
+        <div class="flex gap-2 text-4xl" id="star-container">
+            <span class="material-symbols-outlined star-btn" data-value="1">star</span>
+            <span class="material-symbols-outlined star-btn" data-value="2">star</span>
+            <span class="material-symbols-outlined star-btn" data-value="3">star</span>
+            <span class="material-symbols-outlined star-btn" data-value="4">star</span>
+            <span class="material-symbols-outlined star-btn" data-value="5">star</span>
+        </div>
+    </div>
+
+    <!-- COMMENT -->
+    <div>
+        <label class="block text-sm mb-2">Comentário</label>
+        <textarea name="comment" rows="4" 
+                  class="w-full p-3 bg-zinc-800 rounded-lg outline-none text-white placeholder-zinc-500"
+                  placeholder="Escreva sua opinião..."></textarea>
+    </div>
+
+    <div class="flex gap-4">
+        <button type="submit" class="flex-1 bg-violet-500 py-3 rounded-lg font-bold hover:opacity-90">
+            Salvar Análise
+        </button>
+        <a href="{% url 'games:game_detail' game.id %}" class="flex-1 text-center bg-zinc-700 py-3 rounded-lg">
+            Cancelar
+        </a>
+    </div>
+</form>
+
+</main>
+
+<script>
+    const stars = document.querySelectorAll('.star-btn');
+    const ratingInput = document.getElementById('review-rating');
+    let currentRating = 5; // Default rating
+
+    function updateStars(value) {
+        stars.forEach(star => {
+            if (parseInt(star.dataset.value) <= value) {
+                star.classList.add('active');
+            } else {
+                star.classList.remove('active');
+            }
+        });
+    }
+
+    updateStars(currentRating);
+
+    stars.forEach(star => {
+        star.addEventListener('click', () => {
+            currentRating = star.dataset.value;
+            ratingInput.value = currentRating;
+            updateStars(currentRating);
+        });
+        star.addEventListener('mouseenter', () => updateStars(star.dataset.value));
+        star.addEventListener('mouseleave', () => updateStars(currentRating));
+    });
+</script>
+
+</body>
+</html>

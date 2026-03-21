@@ -7,7 +7,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
 
-    <title>Update Game</title>
+    <title>Editar Jogo</title>
 
     <script>
       tailwind.config = {
@@ -54,6 +54,8 @@
         .focus-glow:focus-within {
             box-shadow: 0 4px 20px -2px rgba(0, 227, 253, 0.2);
         }
+        .star-btn:hover, .star-btn.active { font-variation-settings: 'FILL' 1; color: #fbbf24; }
+        .star-btn { font-variation-settings: 'FILL' 0; transition: all 0.2s; cursor: pointer; color: #52525b; }
     </style>
 </head>
 
@@ -63,8 +65,8 @@
     <div class="flex items-center gap-8">
         <span class="text-2xl font-bold tracking-tighter text-violet-400 font-headline">MyGameList</span>
         <div class="hidden md:flex items-center gap-6">
-            <a href="{% url 'games:game_list' %}" class="tracking-tight text-violet-400 border-b-2 border-violet-500 pb-1">Library</a>
-            <a href="{% url 'games:search_games' %}" class="tracking-tight text-neutral-400 hover:text-neutral-100 transition-colors">Discover</a>
+            <a href="{% url 'games:game_list' %}" class="tracking-tight text-violet-400 border-b-2 border-violet-500 pb-1">Biblioteca</a>
+            <a href="{% url 'games:search_games' %}" class="tracking-tight text-neutral-400 hover:text-neutral-100 transition-colors">Descobrir</a>
         </div>
     </div>
 
@@ -85,16 +87,16 @@
         <div class="mb-12 text-center md:text-left">
             <div class="flex items-center justify-center md:justify-start gap-2 text-on-surface-variant uppercase tracking-widest mb-4 text-xs">
                 <span class="material-symbols-outlined text-sm">inventory_2</span>
-                <span>Digital Vault</span>
+                <span>Cofre Digital</span>
                 <span class="material-symbols-outlined text-sm">chevron_right</span>
-                <span class="text-secondary">Edit Entry</span>
+                <span class="text-secondary">Editar</span>
             </div>
 
             <h1 class="font-headline text-5xl md:text-6xl font-bold tracking-tighter text-on-surface mb-2">
-                Update <span class="text-primary">Game</span>
+                Editar <span class="text-primary">Jogo</span>
             </h1>
             <p class="text-on-surface-variant max-w-lg">
-                Update the details of your saved title.
+                Atualize os detalhes do jogo salvo.
             </p>
         </div>
 
@@ -104,7 +106,7 @@
 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <div class="md:col-span-2 space-y-2">
-                        <label class="block font-headline text-sm font-medium tracking-wide text-on-surface-variant uppercase" for="title">Game Title</label>
+                        <label class="block font-headline text-sm font-medium tracking-wide text-on-surface-variant uppercase" for="title">Título do Jogo</label>
                         <div class="focus-glow rounded-lg transition-all">
                             <input
                                 type="text"
@@ -112,13 +114,13 @@
                                 name="title"
                                 value="{{ form.title.value|default:'' }}"
                                 class="w-full bg-surface-container-highest border-none rounded-lg py-4 px-5 text-on-surface focus:ring-1 focus:ring-secondary transition-colors placeholder:text-outline"
-                                placeholder="Enter game title"
+                                placeholder="Título do jogo"
                             >
                         </div>
                     </div>
 
                     <div class="space-y-2">
-                        <label class="block font-headline text-sm font-medium tracking-wide text-on-surface-variant uppercase" for="release_date">Release Date</label>
+                        <label class="block font-headline text-sm font-medium tracking-wide text-on-surface-variant uppercase" for="release_date">Data Lançamento</label>
                         <div class="focus-glow rounded-lg transition-all">
                             <input
                                 type="date"
@@ -132,7 +134,7 @@
                 </div>
 
                 <div class="space-y-2">
-                    <label class="block font-headline text-sm font-medium tracking-wide text-on-surface-variant uppercase" for="image">Image URL</label>
+                    <label class="block font-headline text-sm font-medium tracking-wide text-on-surface-variant uppercase" for="image">URL da Imagem</label>
                     <div class="relative focus-glow rounded-lg transition-all">
                         <div class="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none">
                             <span class="material-symbols-outlined text-on-surface-variant text-xl">link</span>
@@ -149,25 +151,51 @@
                 </div>
 
                 <div class="space-y-2">
-                    <label class="block font-headline text-sm font-medium tracking-wide text-on-surface-variant uppercase" for="description">Description</label>
+                    <label class="block font-headline text-sm font-medium tracking-wide text-on-surface-variant uppercase" for="description">Descrição</label>
                     <div class="focus-glow rounded-lg transition-all">
                         <textarea
                             id="description"
                             name="description"
                             rows="5"
                             class="w-full bg-surface-container-highest border-none rounded-lg py-4 px-5 text-on-surface focus:ring-1 focus:ring-secondary transition-colors placeholder:text-outline resize-none"
-                            placeholder="Describe the game..."
+                            placeholder="Descrição do jogo..."
                         >{{ form.description.value|default:'' }}</textarea>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="space-y-2">
+                        <label class="block font-headline text-sm font-medium tracking-wide text-on-surface-variant uppercase" for="status">Status</label>
+                        <div class="focus-glow rounded-lg transition-all">
+                            <select name="status" id="status" class="w-full bg-surface-container-highest border-none rounded-lg py-4 px-5 text-on-surface focus:ring-1 focus:ring-secondary transition-colors appearance-none">
+                                <option value="backlog" {% if form.status.value == 'backlog' %}selected{% endif %}>Na Lista</option>
+                                <option value="playing" {% if form.status.value == 'playing' %}selected{% endif %}>Jogando</option>
+                                <option value="completed" {% if form.status.value == 'completed' %}selected{% endif %}>Zerado</option>
+                                <option value="dropped" {% if form.status.value == 'dropped' %}selected{% endif %}>Largado</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="space-y-2">
+                        <label class="block font-headline text-sm font-medium tracking-wide text-on-surface-variant uppercase" for="personal_rating">Avaliação (1-5)</label>
+                         <input type="hidden" name="personal_rating" id="rating-input" value="{{ form.personal_rating.value|default:'' }}">
+                        <div class="flex gap-2 text-3xl py-3" id="star-container">
+                            <span class="material-symbols-outlined star-btn" data-value="1">star</span>
+                            <span class="material-symbols-outlined star-btn" data-value="2">star</span>
+                            <span class="material-symbols-outlined star-btn" data-value="3">star</span>
+                            <span class="material-symbols-outlined star-btn" data-value="4">star</span>
+                            <span class="material-symbols-outlined star-btn" data-value="5">star</span>
+                        </div>
                     </div>
                 </div>
 
                 <div class="pt-6 flex flex-col md:flex-row items-center gap-4">
                     <button type="submit" class="w-full md:w-auto px-10 py-4 rounded-full primary-gradient text-black font-bold uppercase tracking-widest hover:shadow-[0_0_20px_rgba(182,160,255,0.4)] transition-all active:scale-95">
-                        Update Game
+                        Salvar Alterações
                     </button>
 
                     <a href="{% url 'games:game_detail' game.id %}" class="w-full md:w-auto px-10 py-4 rounded-full border border-primary/30 text-primary font-bold uppercase tracking-widest hover:bg-primary/5 transition-all active:scale-95 text-center">
-                        Cancel
+                        Cancelar
                     </a>
                 </div>
             </form>
@@ -179,15 +207,49 @@
     <div class="flex flex-col md:flex-row justify-between items-center px-8 space-y-4 md:space-y-0">
         <div class="flex flex-col items-center md:items-start">
             <span class="text-lg font-black text-neutral-100 font-headline tracking-tighter">MyGameList</span>
-            <p class="text-xs uppercase tracking-widest text-neutral-500">Your digital vault.</p>
+            <p class="text-xs uppercase tracking-widest text-neutral-500">Seu cofre digital.</p>
         </div>
 
         <div class="flex gap-8">
-            <a class="text-xs uppercase tracking-widest text-neutral-500 hover:text-cyan-300 transition-colors" href="{% url 'games:game_list' %}">Library</a>
-            <a class="text-xs uppercase tracking-widest text-neutral-500 hover:text-cyan-300 transition-colors" href="{% url 'games:search_games' %}">Discover</a>
+            <a class="text-xs uppercase tracking-widest text-neutral-500 hover:text-cyan-300 transition-colors" href="{% url 'games:game_list' %}">Biblioteca</a>
+            <a class="text-xs uppercase tracking-widest text-neutral-500 hover:text-cyan-300 transition-colors" href="{% url 'games:search_games' %}">Descobrir</a>
         </div>
     </div>
 </footer>
 
+<script>
+    const stars = document.querySelectorAll('.star-btn');
+    const ratingInput = document.getElementById('rating-input');
+    let currentRating = ratingInput.value || 0;
+
+    function updateStars(value) {
+        stars.forEach(star => {
+            if (parseInt(star.dataset.value) <= value) {
+                star.classList.add('active');
+            } else {
+                star.classList.remove('active');
+            }
+        });
+    }
+
+    // Init
+    updateStars(currentRating);
+
+    stars.forEach(star => {
+        star.addEventListener('click', () => {
+            currentRating = star.dataset.value;
+            ratingInput.value = currentRating;
+            updateStars(currentRating);
+        });
+
+        star.addEventListener('mouseenter', () => {
+            updateStars(star.dataset.value);
+        });
+
+        star.addEventListener('mouseleave', () => {
+            updateStars(currentRating);
+        });
+    });
+</script>
 </body>
 </html>
