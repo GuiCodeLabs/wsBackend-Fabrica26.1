@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Buscar Jogos</title>
+</head>
+<body>
+
+<h1>Buscar Jogos</h1>
+
+<form method="get">
+    <input type="text" name="q" placeholder="Digite o nome do jogo">
+    <button type="submit">Buscar</button>
+</form>
+
+<hr>
+
+{% for game in games %}
+    <div>
+        <h3>{{ game.name }}</h3>
+
+        {% if game.background_image %}
+            <img src="{{ game.background_image }}" width="200">
+        {% endif %}
+
+        <p>Lançamento: {{ game.released }}</p>
+    </div>
+{% empty %}
+    <p>Nenhum resultado</p>
+{% endfor %}
+
+</body>
+</html>
