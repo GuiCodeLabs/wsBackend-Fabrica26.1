@@ -68,3 +68,23 @@ def search_games(request):
         games = data.get('results', [])
 
     return render(request, 'games/search_games.html', {'games': games})
+
+@login_required
+def save_api_game(request):
+    if request.method == 'POST':
+        title = request.POST.get('title')
+        description = request.POST.get('description')
+        image = request.POST.get('image')
+        release_date = request.POST.get('release_date')
+        api_id = request.POST.get('api_id')
+
+        Game.objects.create(
+            user=request.user,
+            title=title,
+            description=description or '',
+            image=image or '',
+            release_date=release_date if release_date else None,
+            api_id=api_id if api_id else None,
+        )
+
+        return redirect('games:game_list')
