@@ -4,6 +4,8 @@
     <title>Games</title>
 </head>
 <body>
+    <a href="{% url 'games:create_game' %}">Criar novo jogo</a>
+    
     <h1>Lista de Jogos</h1>
 
     {% for game in games %}
