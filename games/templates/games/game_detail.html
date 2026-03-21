@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ game.title }}</title>
+</head>
+<body>
+
+    <h1>{{ game.title }}</h1>
+
+    <p>{{ game.description }}</p>
+
+    {% if game.image %}
+        <img src="{{ game.image }}" width="200">
+    {% endif %}
+
+    <p>Release date: {{ game.release_date }}</p>
+
+    <a href="/">Voltar</a>
+
+</body>
+</html>

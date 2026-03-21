@@ -7,7 +7,11 @@
     <h1>Lista de Jogos</h1>
 
     {% for game in games %}
-        <p>{{ game.title }}</p>
+    <p>
+        <a href="{% url 'games:game_detail' game.id %}">
+            {{ game.title }}
+        </a>
+    </p>
     {% empty %}
         <p>Nenhum jogo cadastrado.</p>
     {% endfor %}
