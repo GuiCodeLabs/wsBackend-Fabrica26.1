@@ -78,13 +78,16 @@ def save_api_game(request):
         release_date = request.POST.get('release_date')
         api_id = request.POST.get('api_id')
 
-        Game.objects.create(
-            user=request.user,
-            title=title,
-            description=description or '',
-            image=image or '',
-            release_date=release_date if release_date else None,
-            api_id=api_id if api_id else None,
-        )
+        game_exists = Game.objects.filter(user=request.user, api_id=api_id).exists()
+
+        if not game_exists:
+            Game.objects.create(
+                user=request.user,
+                title=title,
+                description=description or '',
+                image=image or '',
+                release_date=release_date if release_date else None,
+                api_id=api_id if api_id else None,
+            )
 
         return redirect('games:game_list')
