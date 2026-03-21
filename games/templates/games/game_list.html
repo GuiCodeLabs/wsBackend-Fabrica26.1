@@ -112,9 +112,10 @@
             <span class="text-sm text-zinc-300 hidden sm:block">
                 {{ request.user.username }}
             </span>
-            <a href="{% url 'logout' %}" class="px-4 py-2 rounded-full bg-surface-container-highest text-sm hover:bg-surface-bright transition-colors">
-                Logout
-            </a>
+            <form method="post" action="{% url 'logout' %}">
+                {% csrf_token %}
+                <button type="submit" class="px-4 py-2 rounded-full bg-surface-container-highest text-sm hover:bg-surface-bright transition-colors">Logout</button>
+            </form>
         </div>
     </nav>
 
