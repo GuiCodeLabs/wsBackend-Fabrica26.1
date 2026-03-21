@@ -1,18 +1,149 @@
 <!DOCTYPE html>
-<html>
+<html class="dark" lang="en">
 <head>
-    <title>Deletar Jogo</title>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+
+    <title>Delete Game</title>
+
+    <script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "surface": "#0e0e0e",
+              "surface-container-low": "#131313",
+              "surface-container": "#1a1a1a",
+              "surface-container-high": "#20201f",
+              "surface-container-highest": "#262626",
+              "surface-bright": "#2c2c2c",
+              "on-surface": "#ffffff",
+              "on-surface-variant": "#adaaaa",
+              "outline-variant": "#484847",
+              "primary": "#b6a0ff",
+              "error": "#ff6e84",
+              "error-dim": "#d73357",
+              "error-container": "#a70138",
+            },
+            fontFamily: {
+              "headline": ["Space Grotesk"],
+              "body": ["Inter"],
+              "label": ["Inter"]
+            }
+          }
+        }
+      }
+    </script>
+
+    <style>
+      .material-symbols-outlined {
+        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      }
+      .glass-card {
+        background: rgba(38, 38, 38, 0.6);
+        backdrop-filter: blur(24px);
+      }
+      .destructive-gradient {
+        background: linear-gradient(135deg, #a70138 0%, #d73357 100%);
+      }
+    </style>
 </head>
-<body>
 
-    <h1>Tem certeza que deseja deletar "{{ game.title }}"?</h1>
+<body class="bg-surface text-on-surface font-body min-h-screen flex flex-col">
 
-    <form method="post">
-        {% csrf_token %}
-        <button type="submit">Sim, deletar</button>
-    </form>
+<nav class="fixed top-0 w-full z-50 bg-black/80 backdrop-blur-xl bg-[#131313] flex justify-between items-center px-8 h-20">
+    <div class="flex items-center gap-8">
+        <span class="text-2xl font-bold tracking-tighter text-[#b6a0ff] uppercase font-['Space_Grotesk']">MyGameList</span>
+        <div class="hidden md:flex items-center gap-6">
+            <a class="text-[#adaaaa] hover:text-white transition-colors" href="{% url 'games:game_list' %}">Library</a>
+            <a class="text-[#adaaaa] hover:text-white transition-colors" href="{% url 'games:search_games' %}">Discover</a>
+        </div>
+    </div>
 
-    <a href="/">Cancelar</a>
+    <div class="flex items-center gap-4">
+        <span class="hidden sm:block text-sm text-zinc-300">{{ request.user.username }}</span>
+        <a href="{% url 'logout' %}" class="px-4 py-2 rounded-full bg-surface-container-highest text-sm hover:bg-surface-bright transition-colors">
+            Logout
+        </a>
+    </div>
+</nav>
+
+<main class="flex-grow flex items-center justify-center px-6 pt-32 pb-20">
+    <div class="relative w-full max-w-2xl">
+        <div class="absolute -top-12 -left-12 w-64 h-64 bg-primary/10 rounded-full blur-[80px]"></div>
+        <div class="absolute -bottom-12 -right-12 w-64 h-64 bg-error/10 rounded-full blur-[80px]"></div>
+
+        <div class="glass-card rounded-xl p-8 md:p-12 relative overflow-hidden border border-outline-variant/10">
+            <div class="absolute top-0 left-0 w-1 h-full destructive-gradient"></div>
+
+            <div class="flex flex-col items-center text-center">
+                <div class="w-20 h-20 rounded-full bg-error-container/20 flex items-center justify-center mb-8">
+                    <span class="material-symbols-outlined text-error text-4xl">delete_forever</span>
+                </div>
+
+                <p class="font-headline text-on-surface-variant uppercase tracking-widest text-xs mb-2">Vault Management</p>
+                <h1 class="font-headline text-4xl md:text-5xl font-bold tracking-tight mb-6">{{ game.title }}</h1>
+
+                <div class="max-w-md mx-auto">
+                    <p class="text-on-surface-variant text-lg leading-relaxed mb-10 font-light">
+                        Are you sure you want to remove this title from your vault?
+                        <span class="text-error font-medium">This action cannot be undone.</span>
+                    </p>
+                </div>
+
+                <div class="w-full bg-surface-container-low rounded-lg p-4 mb-10 flex items-center gap-4 text-left border border-outline-variant/5">
+                    <div class="w-16 h-20 rounded-md overflow-hidden flex-shrink-0">
+                        {% if game.image %}
+                            <img src="{{ game.image }}" alt="{{ game.title }}" class="w-full h-full object-cover"/>
+                        {% else %}
+                            <div class="w-full h-full bg-surface-container-highest flex items-center justify-center text-xs text-on-surface-variant">
+                                No image
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div>
+                        <p class="font-headline font-bold text-on-surface">{{ game.title }}</p>
+                        {% if game.release_date %}
+                            <p class="text-xs text-on-surface-variant uppercase tracking-wider">Released {{ game.release_date }}</p>
+                        {% else %}
+                            <p class="text-xs text-on-surface-variant uppercase tracking-wider">Release date unavailable</p>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <form method="post" class="flex flex-col sm:flex-row gap-4 w-full justify-center">
+                    {% csrf_token %}
+
+                    <a href="{% url 'games:game_detail' game.id %}" class="flex-1 max-w-[240px] px-8 py-4 rounded-full font-headline font-bold uppercase tracking-wider text-sm transition-all duration-300 hover:scale-105 active:scale-95 bg-surface-container-highest border border-outline-variant/20 hover:bg-surface-bright text-on-surface text-center">
+                        Cancel
+                    </a>
+
+                    <button type="submit" class="flex-1 max-w-[240px] px-8 py-4 rounded-full font-headline font-bold uppercase tracking-wider text-sm destructive-gradient text-white transition-all duration-300 hover:scale-105 active:scale-95 shadow-[0_0_20px_rgba(215,51,87,0.2)] hover:shadow-[0_0_30px_rgba(215,51,87,0.4)]">
+                        Confirm Deletion
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</main>
+
+<footer class="w-full py-12 px-8 mt-auto bg-[#0e0e0e]">
+    <div class="flex flex-col md:flex-row justify-between items-center gap-6 max-w-7xl mx-auto">
+        <span class="text-lg font-black text-[#adaaaa] uppercase tracking-widest">MyGameList</span>
+
+        <div class="flex flex-wrap justify-center gap-8">
+            <a class="text-[#adaaaa] text-xs uppercase tracking-widest hover:text-[#00e3fd] transition-colors opacity-80 hover:opacity-100" href="{% url 'games:game_list' %}">Library</a>
+            <a class="text-[#adaaaa] text-xs uppercase tracking-widest hover:text-[#00e3fd] transition-colors opacity-80 hover:opacity-100" href="{% url 'games:search_games' %}">Discover</a>
+        </div>
+
+        <p class="text-[#adaaaa] text-xs uppercase tracking-widest opacity-60">Your digital vault.</p>
+    </div>
+</footer>
 
 </body>
 </html>

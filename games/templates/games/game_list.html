@@ -1,23 +1,226 @@
 <!DOCTYPE html>
-<html>
+<html class="dark" lang="en">
 <head>
-    <title>Games</title>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>MyGameList - Your Library</title>
+
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "inverse-primary": "#6834eb",
+                        "primary-fixed-dim": "#9c7eff",
+                        "surface-bright": "#2c2c2c",
+                        "primary": "#b6a0ff",
+                        "surface-dim": "#0e0e0e",
+                        "secondary-fixed": "#26e6ff",
+                        "surface-variant": "#262626",
+                        "tertiary-dim": "#ef77a0",
+                        "surface-container-lowest": "#000000",
+                        "on-primary": "#340090",
+                        "surface-container-high": "#20201f",
+                        "primary-container": "#a98fff",
+                        "on-primary-fixed": "#000000",
+                        "on-tertiary-fixed-variant": "#70103b",
+                        "on-primary-container": "#280072",
+                        "secondary-container": "#006875",
+                        "surface-container-highest": "#262626",
+                        "outline": "#767575",
+                        "surface-tint": "#b6a0ff",
+                        "on-secondary-fixed": "#003a42",
+                        "surface-container": "#1a1a1a",
+                        "error-container": "#a70138",
+                        "error": "#ff6e84",
+                        "tertiary-fixed-dim": "#f57ca5",
+                        "primary-fixed": "#a98fff",
+                        "on-background": "#ffffff",
+                        "background": "#0e0e0e",
+                        "on-secondary": "#004d57",
+                        "on-secondary-fixed-variant": "#005964",
+                        "on-tertiary-fixed": "#380019",
+                        "outline-variant": "#484847",
+                        "inverse-on-surface": "#565555",
+                        "tertiary-container": "#fc81ab",
+                        "on-primary-fixed-variant": "#32008a",
+                        "surface": "#0e0e0e",
+                        "on-surface-variant": "#adaaaa",
+                        "tertiary": "#ff97b8",
+                        "secondary": "#00e3fd",
+                        "on-tertiary-container": "#59002b",
+                        "inverse-surface": "#fcf9f8",
+                        "surface-container-low": "#131313",
+                        "secondary-dim": "#00d4ec",
+                        "on-surface": "#ffffff",
+                        "on-tertiary": "#6a0936",
+                        "secondary-fixed-dim": "#00d7f0",
+                        "tertiary-fixed": "#ff8db2",
+                        "error-dim": "#d73357",
+                        "primary-dim": "#7e51ff",
+                        "on-error-container": "#ffb2b9",
+                        "on-secondary-container": "#e8fbff",
+                        "on-error": "#490013"
+                    },
+                    fontFamily: {
+                        "headline": ["Space Grotesk"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+
+    <style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
 </head>
-<body>
-    <a href="{% url 'games:search_games' %}">Buscar jogos</a>
-    <a href="{% url 'games:create_game' %}">Criar novo jogo</a>
 
-    <h1>Lista de Jogos</h1>
+<body class="bg-surface text-on-surface font-body selection:bg-primary/30">
 
-    {% for game in games %}
-    <p>
-        <a href="{% url 'games:game_detail' game.id %}">
-            {{ game.title }}
-        </a>
-    </p>
-    {% empty %}
-        <p>Nenhum jogo cadastrado.</p>
-    {% endfor %}
+    <nav class="fixed top-0 w-full z-50 bg-zinc-950/80 backdrop-blur-xl shadow-2xl shadow-violet-900/10 flex justify-between items-center px-8 h-20 max-w-none">
+        <div class="flex items-center gap-12">
+            <span class="text-2xl font-bold tracking-tighter text-transparent bg-clip-text bg-gradient-to-br from-violet-400 to-violet-600 font-['Space_Grotesk']">
+                MyGameList
+            </span>
+
+            <div class="hidden md:flex gap-8 items-center h-full">
+                <a class="font-['Space_Grotesk'] tracking-tight text-violet-400 border-b-2 border-violet-500 pb-1 transition-all" href="{% url 'games:game_list' %}">
+                    Library
+                </a>
+                <a class="font-['Space_Grotesk'] tracking-tight text-zinc-400 hover:text-zinc-100 transition-colors" href="{% url 'games:search_games' %}">
+                    Discover
+                </a>
+            </div>
+        </div>
+
+        <div class="flex items-center gap-4">
+            <span class="text-sm text-zinc-300 hidden sm:block">
+                {{ request.user.username }}
+            </span>
+            <a href="{% url 'logout' %}" class="px-4 py-2 rounded-full bg-surface-container-highest text-sm hover:bg-surface-bright transition-colors">
+                Logout
+            </a>
+        </div>
+    </nav>
+
+    <main class="pt-32 pb-24 px-8 md:px-12 max-w-[1600px] mx-auto">
+        <header class="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-16">
+            <div class="space-y-2">
+                <h1 class="font-headline text-6xl font-bold tracking-tighter text-on-surface">
+                    Your Library
+                </h1>
+                <p class="text-on-surface-variant text-lg max-w-xl">
+                    Managing <span class="text-primary font-medium">{{ games|length }}</span> games in your digital vault.
+                </p>
+            </div>
+
+            <div class="flex flex-wrap items-center gap-4">
+                <a href="{% url 'games:search_games' %}" class="flex items-center gap-2 bg-surface-container-highest px-6 py-3 rounded-full hover:bg-surface-bright transition-all border border-outline-variant/10">
+                    <span class="material-symbols-outlined text-secondary">search</span>
+                    <span class="font-label text-sm uppercase tracking-wider">Search Games</span>
+                </a>
+
+                <a href="{% url 'games:create_game' %}" class="flex items-center gap-2 bg-gradient-to-br from-primary to-primary-dim px-8 py-3 rounded-full text-on-primary-fixed font-bold hover:shadow-[0_0_20px_rgba(182,160,255,0.3)] transition-all active:scale-95 duration-200">
+                    <span class="material-symbols-outlined">add</span>
+                    <span>Add New Game</span>
+                </a>
+            </div>
+        </header>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+            {% for game in games %}
+                <div class="group relative bg-surface-container-low rounded-xl overflow-hidden hover:bg-surface-container-high transition-all duration-500">
+                    <div class="aspect-[3/4] overflow-hidden relative">
+                        {% if game.image %}
+                            <img src="{{ game.image }}" alt="{{ game.title }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
+                        {% else %}
+                            <div class="w-full h-full bg-surface-container-highest flex items-center justify-center text-on-surface-variant">
+                                No Image
+                            </div>
+                        {% endif %}
+
+                        <div class="absolute inset-0 bg-gradient-to-t from-surface-container-low via-transparent to-transparent opacity-60"></div>
+                    </div>
+
+                    <div class="p-6 space-y-4">
+                        <div>
+                            <h3 class="font-headline text-2xl font-bold tracking-tight mb-1 group-hover:text-primary transition-colors">
+                                {{ game.title }}
+                            </h3>
+
+                            <p class="font-label text-xs uppercase tracking-widest text-on-surface-variant">
+                                {% if game.release_date %}
+                                    Released: {{ game.release_date }}
+                                {% else %}
+                                    Release date unavailable
+                                {% endif %}
+                            </p>
+                        </div>
+
+                        <div class="flex items-center gap-2">
+                            <a href="{% url 'games:game_detail' game.id %}" class="flex-1 bg-surface-container-highest hover:bg-surface-bright py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition-colors text-center">
+                                Details
+                            </a>
+
+                            <a href="{% url 'games:update_game' game.id %}" class="p-2 bg-surface-container-highest hover:bg-surface-bright rounded-lg transition-colors">
+                                <span class="material-symbols-outlined text-sm">edit</span>
+                            </a>
+
+                            <a href="{% url 'games:delete_game' game.id %}" class="p-2 bg-surface-container-highest hover:text-error rounded-lg transition-colors">
+                                <span class="material-symbols-outlined text-sm">delete</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            {% empty %}
+                <div class="col-span-full text-center py-16 bg-surface-container-low rounded-xl">
+                    <h2 class="font-headline text-3xl font-bold mb-4">No games yet</h2>
+                    <p class="text-on-surface-variant mb-6">Start building your library by adding a new game or searching through the API.</p>
+                    <div class="flex justify-center gap-4 flex-wrap">
+                        <a href="{% url 'games:create_game' %}" class="px-6 py-3 rounded-full bg-gradient-to-br from-primary to-primary-dim text-on-primary-fixed font-bold">
+                            Add New Game
+                        </a>
+                        <a href="{% url 'games:search_games' %}" class="px-6 py-3 rounded-full bg-surface-container-highest hover:bg-surface-bright transition-colors">
+                            Search Games
+                        </a>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </main>
+
+    <footer class="bg-zinc-950 w-full py-12 mt-24 flex flex-col md:flex-row justify-between items-center px-12 border-t border-zinc-800/50">
+        <div class="mb-8 md:mb-0">
+            <span class="text-lg font-bold text-zinc-100 block mb-2">MyGameList</span>
+            <p class="font-['Inter'] text-xs uppercase tracking-widest text-zinc-500">
+                Your personal game library.
+            </p>
+        </div>
+
+        <div class="flex flex-wrap justify-center gap-8">
+            <a class="font-['Inter'] text-xs uppercase tracking-widest text-zinc-500 hover:text-violet-400 transition-colors opacity-80 hover:opacity-100" href="{% url 'games:game_list' %}">
+                Library
+            </a>
+            <a class="font-['Inter'] text-xs uppercase tracking-widest text-zinc-500 hover:text-violet-400 transition-colors opacity-80 hover:opacity-100" href="{% url 'games:search_games' %}">
+                Discover
+            </a>
+        </div>
+    </footer>
 
 </body>
 </html>

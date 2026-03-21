@@ -1,23 +1,218 @@
 <!DOCTYPE html>
-<html>
+<html class="dark" lang="en">
 <head>
-    <title>{{ game.title }}</title>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+
+    <title>{{ game.title }} | MyGameList</title>
+
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "on-primary": "#340090",
+                        "inverse-on-surface": "#565555",
+                        "background": "#0e0e0e",
+                        "tertiary": "#ff97b8",
+                        "surface": "#0e0e0e",
+                        "secondary-fixed-dim": "#00d7f0",
+                        "on-primary-fixed-variant": "#32008a",
+                        "surface-container-high": "#20201f",
+                        "on-tertiary": "#6a0936",
+                        "surface-variant": "#262626",
+                        "primary-fixed-dim": "#9c7eff",
+                        "on-primary-container": "#280072",
+                        "inverse-primary": "#6834eb",
+                        "secondary-container": "#006875",
+                        "surface-container": "#1a1a1a",
+                        "secondary": "#00e3fd",
+                        "on-surface": "#ffffff",
+                        "surface-container-lowest": "#000000",
+                        "on-tertiary-container": "#59002b",
+                        "outline": "#767575",
+                        "on-error-container": "#ffb2b9",
+                        "on-error": "#490013",
+                        "on-secondary-container": "#e8fbff",
+                        "surface-bright": "#2c2c2c",
+                        "surface-container-highest": "#262626",
+                        "secondary-fixed": "#26e6ff",
+                        "primary-fixed": "#a98fff",
+                        "inverse-surface": "#fcf9f8",
+                        "surface-tint": "#b6a0ff",
+                        "on-secondary-fixed": "#003a42",
+                        "on-tertiary-fixed": "#380019",
+                        "on-secondary": "#004d57",
+                        "primary": "#b6a0ff",
+                        "error": "#ff6e84",
+                        "on-secondary-fixed-variant": "#005964",
+                        "error-dim": "#d73357",
+                        "tertiary-fixed": "#ff8db2",
+                        "tertiary-container": "#fc81ab",
+                        "secondary-dim": "#00d4ec",
+                        "error-container": "#a70138",
+                        "tertiary-fixed-dim": "#f57ca5",
+                        "on-tertiary-fixed-variant": "#70103b",
+                        "primary-container": "#a98fff",
+                        "on-background": "#ffffff",
+                        "tertiary-dim": "#ef77a0",
+                        "on-surface-variant": "#adaaaa",
+                        "surface-dim": "#0e0e0e",
+                        "surface-container-low": "#131313",
+                        "on-primary-fixed": "#000000",
+                        "primary-dim": "#7e51ff",
+                        "outline-variant": "#484847"
+                    },
+                    fontFamily: {
+                        "headline": ["Space Grotesk"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+
+    <style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
 </head>
-<body>
-    <a href="{% url 'games:update_game' game.id %}">Editar</a>
-    <a href="{% url 'games:delete_game' game.id %}">Deletar</a>
-    <h1>{{ game.title }}</h1>
 
-    <p>{{ game.description }}</p>
+<body class="bg-background text-on-background font-body selection:bg-primary selection:text-on-primary-fixed">
 
-    {% if game.image %}
-        <img src="{{ game.image }}" width="200">
-    {% endif %}
+    <nav class="fixed top-0 w-full z-50 bg-zinc-950/80 backdrop-blur-xl shadow-2xl shadow-black/50 flex items-center justify-between px-8 h-20">
+        <div class="text-2xl font-bold tracking-tighter text-violet-500 font-['Space_Grotesk']">
+            MyGameList
+        </div>
 
-    <p>Release date: {{ game.release_date }}</p>
+        <div class="hidden md:flex items-center gap-8 font-['Space_Grotesk'] tracking-tight">
+            <a href="{% url 'games:game_list' %}" class="text-zinc-400 hover:text-zinc-100 transition-colors hover:bg-zinc-800/50 rounded-lg px-3 py-2">
+                Library
+            </a>
+            <a href="{% url 'games:search_games' %}" class="text-zinc-400 hover:text-zinc-100 transition-colors hover:bg-zinc-800/50 rounded-lg px-3 py-2">
+                Discover
+            </a>
+        </div>
 
-    
-    <a href="/">Voltar</a>
+        <div class="flex items-center gap-4">
+            <span class="hidden sm:block text-sm text-zinc-300">{{ request.user.username }}</span>
+            <a href="{% url 'logout' %}" class="px-4 py-2 rounded-full bg-surface-container-highest text-sm hover:bg-surface-bright transition-colors">
+                Logout
+            </a>
+        </div>
+    </nav>
+
+    <main class="pt-32 pb-24 px-6 md:px-12 max-w-[1400px] mx-auto min-h-screen">
+
+        <div class="mb-8">
+            <a href="{% url 'games:game_list' %}" class="inline-flex items-center gap-2 text-zinc-400 hover:text-white transition-colors">
+                <span class="material-symbols-outlined text-sm">arrow_back</span>
+                Back to Library
+            </a>
+        </div>
+
+        <section class="grid grid-cols-1 lg:grid-cols-2 gap-10 items-start">
+            <div class="bg-surface-container-low rounded-2xl overflow-hidden shadow-2xl">
+                {% if game.image %}
+                    <img src="{{ game.image }}" alt="{{ game.title }}" class="w-full h-[500px] object-cover"/>
+                {% else %}
+                    <div class="w-full h-[500px] bg-surface-container-highest flex items-center justify-center text-on-surface-variant text-xl">
+                        No Image Available
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="space-y-8">
+                <div>
+                    <p class="text-sm uppercase tracking-[0.3em] text-on-surface-variant mb-3">
+                        Game Details
+                    </p>
+
+                    <h1 class="font-headline text-5xl md:text-6xl font-bold tracking-tighter leading-none mb-4">
+                        {{ game.title }}
+                    </h1>
+
+                    <div class="flex flex-wrap gap-3">
+                        {% if game.release_date %}
+                            <span class="px-4 py-2 rounded-full bg-surface-container-high text-sm text-on-surface-variant">
+                                Released: {{ game.release_date }}
+                            </span>
+                        {% endif %}
+
+                        {% if game.api_id %}
+                            <span class="px-4 py-2 rounded-full bg-surface-container-high text-sm text-on-surface-variant">
+                                API ID: {{ game.api_id }}
+                            </span>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="bg-surface-container-low rounded-2xl p-6">
+                    <h2 class="font-headline text-2xl font-bold mb-4">Description</h2>
+
+                    {% if game.description %}
+                        <p class="text-on-surface-variant leading-8 text-base">
+                            {{ game.description }}
+                        </p>
+                    {% else %}
+                        <p class="text-on-surface-variant leading-8 text-base">
+                            No description available for this game.
+                        </p>
+                    {% endif %}
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <a href="{% url 'games:update_game' game.id %}"
+                       class="flex items-center justify-center gap-2 px-6 py-4 rounded-xl bg-gradient-to-br from-primary to-primary-dim text-on-primary-fixed font-bold hover:shadow-[0_0_20px_rgba(182,160,255,0.4)] transition-all active:scale-95">
+                        <span class="material-symbols-outlined">edit</span>
+                        Edit
+                    </a>
+
+                    <a href="{% url 'games:delete_game' game.id %}"
+                       class="flex items-center justify-center gap-2 px-6 py-4 rounded-xl bg-surface-container-high hover:bg-red-500/20 text-white transition-colors">
+                        <span class="material-symbols-outlined">delete</span>
+                        Delete
+                    </a>
+
+                    <a href="{% url 'games:game_list' %}"
+                       class="flex items-center justify-center gap-2 px-6 py-4 rounded-xl bg-surface-container-high hover:bg-surface-bright text-white transition-colors">
+                        <span class="material-symbols-outlined">home</span>
+                        Library
+                    </a>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-zinc-950 w-full py-12 px-8 border-t border-zinc-800/20">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
+            <div class="text-lg font-black text-zinc-100 font-headline">MyGameList</div>
+
+            <div class="flex gap-8 font-['Inter'] text-sm tracking-wide">
+                <a class="text-zinc-500 hover:text-violet-300 transition-colors" href="{% url 'games:game_list' %}">Library</a>
+                <a class="text-zinc-500 hover:text-violet-300 transition-colors" href="{% url 'games:search_games' %}">Discover</a>
+            </div>
+
+            <div class="text-zinc-500 font-['Inter'] text-sm tracking-wide">
+                Your personal game library.
+            </div>
+        </div>
+    </footer>
 
 </body>
 </html>

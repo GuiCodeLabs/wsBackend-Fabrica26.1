@@ -1,20 +1,192 @@
 <!DOCTYPE html>
-<html>
+<html class="dark" lang="en">
 <head>
-    <title>Editar Jogo</title>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+
+    <title>Update Game</title>
+
+    <script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "background": "#0e0e0e",
+              "surface": "#0e0e0e",
+              "surface-container-low": "#131313",
+              "surface-container": "#1a1a1a",
+              "surface-container-high": "#20201f",
+              "surface-container-highest": "#262626",
+              "surface-bright": "#2c2c2c",
+              "on-surface": "#ffffff",
+              "on-surface-variant": "#adaaaa",
+              "outline": "#767575",
+              "outline-variant": "#484847",
+              "primary": "#b6a0ff",
+              "primary-dim": "#7e51ff",
+              "secondary": "#00e3fd",
+            },
+            fontFamily: {
+              "headline": ["Space Grotesk"],
+              "body": ["Inter"],
+              "label": ["Inter"]
+            }
+          }
+        }
+      }
+    </script>
+
+    <style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-panel {
+            background: rgba(44, 44, 44, 0.6);
+            backdrop-filter: blur(24px);
+        }
+        .primary-gradient {
+            background: linear-gradient(135deg, #b6a0ff 0%, #7e51ff 100%);
+        }
+        .focus-glow:focus-within {
+            box-shadow: 0 4px 20px -2px rgba(0, 227, 253, 0.2);
+        }
+    </style>
 </head>
-<body>
 
-    <h1>Editar Jogo</h1>
+<body class="bg-surface text-on-surface font-body selection:bg-primary min-h-screen">
 
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
+<nav class="fixed top-0 w-full z-50 bg-neutral-950/80 backdrop-blur-xl flex items-center justify-between px-6 py-4">
+    <div class="flex items-center gap-8">
+        <span class="text-2xl font-bold tracking-tighter text-violet-400 font-headline">MyGameList</span>
+        <div class="hidden md:flex items-center gap-6">
+            <a href="{% url 'games:game_list' %}" class="tracking-tight text-violet-400 border-b-2 border-violet-500 pb-1">Library</a>
+            <a href="{% url 'games:search_games' %}" class="tracking-tight text-neutral-400 hover:text-neutral-100 transition-colors">Discover</a>
+        </div>
+    </div>
 
-        <button type="submit">Atualizar</button>
-    </form>
+    <div class="flex items-center gap-4">
+        <span class="hidden sm:block text-sm text-zinc-300">{{ request.user.username }}</span>
+        <a href="{% url 'logout' %}" class="px-4 py-2 rounded-full bg-surface-container-highest text-sm hover:bg-surface-bright transition-colors">
+            Logout
+        </a>
+    </div>
+</nav>
 
-    <a href="/">Voltar</a>
+<main class="min-h-screen pt-32 pb-24 px-6 flex flex-col items-center justify-center relative overflow-hidden">
+    <div class="absolute top-1/4 -left-20 w-96 h-96 bg-primary/10 rounded-full blur-[120px] pointer-events-none"></div>
+    <div class="absolute bottom-1/4 -right-20 w-96 h-96 bg-secondary/10 rounded-full blur-[120px] pointer-events-none"></div>
+
+    <div class="w-full max-w-3xl relative">
+        <div class="mb-12 text-center md:text-left">
+            <div class="flex items-center justify-center md:justify-start gap-2 text-on-surface-variant uppercase tracking-widest mb-4 text-xs">
+                <span class="material-symbols-outlined text-sm">inventory_2</span>
+                <span>Digital Vault</span>
+                <span class="material-symbols-outlined text-sm">chevron_right</span>
+                <span class="text-secondary">Edit Entry</span>
+            </div>
+
+            <h1 class="font-headline text-5xl md:text-6xl font-bold tracking-tighter text-on-surface mb-2">
+                Update <span class="text-primary">Game</span>
+            </h1>
+            <p class="text-on-surface-variant max-w-lg">
+                Update the details of your saved title.
+            </p>
+        </div>
+
+        <div class="glass-panel rounded-xl p-8 md:p-12 border border-outline-variant/10 shadow-2xl">
+            <form method="post" class="space-y-8">
+                {% csrf_token %}
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="md:col-span-2 space-y-2">
+                        <label class="block font-headline text-sm font-medium tracking-wide text-on-surface-variant uppercase" for="title">Game Title</label>
+                        <div class="focus-glow rounded-lg transition-all">
+                            <input
+                                type="text"
+                                id="title"
+                                name="title"
+                                value="{{ form.title.value|default:'' }}"
+                                class="w-full bg-surface-container-highest border-none rounded-lg py-4 px-5 text-on-surface focus:ring-1 focus:ring-secondary transition-colors placeholder:text-outline"
+                                placeholder="Enter game title"
+                            >
+                        </div>
+                    </div>
+
+                    <div class="space-y-2">
+                        <label class="block font-headline text-sm font-medium tracking-wide text-on-surface-variant uppercase" for="release_date">Release Date</label>
+                        <div class="focus-glow rounded-lg transition-all">
+                            <input
+                                type="date"
+                                id="release_date"
+                                name="release_date"
+                                value="{{ form.release_date.value|default:'' }}"
+                                class="w-full bg-surface-container-highest border-none rounded-lg py-4 px-5 text-on-surface focus:ring-1 focus:ring-secondary transition-colors [color-scheme:dark]"
+                            >
+                        </div>
+                    </div>
+                </div>
+
+                <div class="space-y-2">
+                    <label class="block font-headline text-sm font-medium tracking-wide text-on-surface-variant uppercase" for="image">Image URL</label>
+                    <div class="relative focus-glow rounded-lg transition-all">
+                        <div class="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none">
+                            <span class="material-symbols-outlined text-on-surface-variant text-xl">link</span>
+                        </div>
+                        <input
+                            type="url"
+                            id="image"
+                            name="image"
+                            value="{{ form.image.value|default:'' }}"
+                            class="w-full bg-surface-container-highest border-none rounded-lg py-4 pl-12 pr-5 text-on-surface focus:ring-1 focus:ring-secondary transition-colors placeholder:text-outline"
+                            placeholder="https://image-source.com/game-art.jpg"
+                        >
+                    </div>
+                </div>
+
+                <div class="space-y-2">
+                    <label class="block font-headline text-sm font-medium tracking-wide text-on-surface-variant uppercase" for="description">Description</label>
+                    <div class="focus-glow rounded-lg transition-all">
+                        <textarea
+                            id="description"
+                            name="description"
+                            rows="5"
+                            class="w-full bg-surface-container-highest border-none rounded-lg py-4 px-5 text-on-surface focus:ring-1 focus:ring-secondary transition-colors placeholder:text-outline resize-none"
+                            placeholder="Describe the game..."
+                        >{{ form.description.value|default:'' }}</textarea>
+                    </div>
+                </div>
+
+                <div class="pt-6 flex flex-col md:flex-row items-center gap-4">
+                    <button type="submit" class="w-full md:w-auto px-10 py-4 rounded-full primary-gradient text-black font-bold uppercase tracking-widest hover:shadow-[0_0_20px_rgba(182,160,255,0.4)] transition-all active:scale-95">
+                        Update Game
+                    </button>
+
+                    <a href="{% url 'games:game_detail' game.id %}" class="w-full md:w-auto px-10 py-4 rounded-full border border-primary/30 text-primary font-bold uppercase tracking-widest hover:bg-primary/5 transition-all active:scale-95 text-center">
+                        Cancel
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</main>
+
+<footer class="bg-neutral-950 w-full py-12 border-t border-neutral-800/20">
+    <div class="flex flex-col md:flex-row justify-between items-center px-8 space-y-4 md:space-y-0">
+        <div class="flex flex-col items-center md:items-start">
+            <span class="text-lg font-black text-neutral-100 font-headline tracking-tighter">MyGameList</span>
+            <p class="text-xs uppercase tracking-widest text-neutral-500">Your digital vault.</p>
+        </div>
+
+        <div class="flex gap-8">
+            <a class="text-xs uppercase tracking-widest text-neutral-500 hover:text-cyan-300 transition-colors" href="{% url 'games:game_list' %}">Library</a>
+            <a class="text-xs uppercase tracking-widest text-neutral-500 hover:text-cyan-300 transition-colors" href="{% url 'games:search_games' %}">Discover</a>
+        </div>
+    </div>
+</footer>
 
 </body>
 </html>

@@ -1,18 +1,141 @@
 <!DOCTYPE html>
-<html>
+<html class="dark" lang="en">
 <head>
-    <title>Login</title>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Login | MyGameList</title>
+
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "surface-tint": "#b6a0ff",
+                        "outline-variant": "#484847",
+                        "surface-container": "#1a1a1a",
+                        "surface-container-highest": "#262626",
+                        "surface": "#0e0e0e",
+                        "on-surface-variant": "#adaaaa",
+                        "background": "#0e0e0e",
+                        "secondary": "#00e3fd",
+                        "surface-bright": "#2c2c2c",
+                        "primary-dim": "#7e51ff",
+                        "secondary-container": "#006875",
+                        "primary": "#b6a0ff",
+                        "on-surface": "#ffffff",
+                        "outline": "#767575",
+                        "on-primary": "#340090"
+                    },
+                    fontFamily: {
+                        "headline": ["Space Grotesk"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+
+    <style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .neon-glow:hover {
+            box-shadow: 0 0 40px rgba(182, 160, 255, 0.15);
+        }
+        .editorial-gradient {
+            background: radial-gradient(circle at 50% -20%, #1a1a1a 0%, #0e0e0e 100%);
+        }
+    </style>
 </head>
-<body>
+<body class="bg-surface text-on-surface font-body antialiased selection:bg-primary selection:text-on-primary">
+    <div class="fixed inset-0 editorial-gradient -z-10"></div>
 
-    <h1>Login</h1>
+    <main class="min-h-screen flex flex-col items-center justify-center p-6">
+        <div class="mb-12 text-center">
+            <h1 class="font-headline text-4xl font-bold tracking-tighter text-primary uppercase mb-2">
+                MyGameList
+            </h1>
+            <p class="font-label text-on-surface-variant text-xs tracking-[0.2em] uppercase">
+                Curate Your Digital Vault
+            </p>
+        </div>
 
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
+        <div class="w-full max-w-md bg-[#131313] p-8 md:p-12 rounded-xl transition-all duration-500 neon-glow">
+            <div class="mb-10">
+                <h2 class="font-headline text-3xl font-semibold tracking-tight text-white mb-2">
+                    Welcome Back
+                </h2>
+                <p class="text-[#adaaaa] text-sm">
+                    Access your curated library and gaming stats.
+                </p>
+            </div>
 
-        <button type="submit">Entrar</button>
-    </form>
+            <form method="post" class="space-y-6">
+                {% csrf_token %}
 
+                {% if form.errors %}
+                    <div class="bg-red-900/40 border border-red-500 text-red-200 text-sm rounded-lg p-4">
+                        Username or password is incorrect.
+                    </div>
+                {% endif %}
+
+                <div class="space-y-2">
+                    <label for="{{ form.username.id_for_label }}" class="block font-label text-xs font-medium uppercase tracking-wider text-[#adaaaa]">
+                        Username
+                    </label>
+                    <input
+                        type="text"
+                        name="{{ form.username.name }}"
+                        id="{{ form.username.id_for_label }}"
+                        value="{{ form.username.value|default:'' }}"
+                        class="w-full bg-[#262626] border-none rounded-lg py-4 px-5 text-white placeholder:text-[#767575] transition-all duration-300 focus:ring-1 focus:ring-cyan-400/50 focus:bg-[#2c2c2c]"
+                        placeholder="commander_shepard"
+                    />
+                </div>
+
+                <div class="space-y-2">
+                    <div class="flex justify-between items-center">
+                        <label for="{{ form.password.id_for_label }}" class="block font-label text-xs font-medium uppercase tracking-wider text-[#adaaaa]">
+                            Password
+                        </label>
+                    </div>
+                    <input
+                        type="password"
+                        name="{{ form.password.name }}"
+                        id="{{ form.password.id_for_label }}"
+                        class="w-full bg-[#262626] border-none rounded-lg py-4 px-5 text-white placeholder:text-[#767575] transition-all duration-300 focus:ring-1 focus:ring-cyan-400/50 focus:bg-[#2c2c2c]"
+                        placeholder="••••••••"
+                    />
+                </div>
+
+                <div class="pt-4">
+                    <button
+                        type="submit"
+                        class="w-full bg-gradient-to-br from-[#b6a0ff] to-[#7e51ff] text-black font-headline font-bold text-lg py-4 rounded-full shadow-lg shadow-purple-500/10 hover:shadow-purple-500/25 hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 uppercase tracking-widest"
+                    >
+                        Login
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <div class="mt-12 text-center">
+            <p class="text-[#adaaaa] text-sm">
+                Your personal game library starts here.
+            </p>
+        </div>
+    </main>
 </body>
 </html>

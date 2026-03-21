@@ -1,20 +1,83 @@
 <!DOCTYPE html>
-<html>
+<html class="dark" lang="en">
 <head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+
     <title>Create Game</title>
 </head>
-<body>
 
-    <h1>Criar Jogo</h1>
+<body class="bg-black text-white font-body min-h-screen">
 
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
+<!-- NAV -->
+<nav class="fixed top-0 w-full z-50 flex justify-between items-center px-6 h-16 bg-zinc-900">
+    <div class="text-xl font-bold text-violet-400">MyGameList</div>
 
-        <button type="submit">Salvar</button>
-    </form>
+    <div class="flex gap-6">
+        <a href="{% url 'games:game_list' %}">Library</a>
+        <a href="{% url 'games:search_games' %}">Discover</a>
+    </div>
+</nav>
 
-    <a href="/">Voltar</a>
+<main class="pt-32 px-6 max-w-2xl mx-auto">
 
+<header class="mb-10">
+    <h1 class="text-4xl font-bold">Add New Game</h1>
+    <p class="text-zinc-400">Add a game manually to your library</p>
+</header>
+
+<!-- FORM -->
+<form method="post" class="space-y-6">
+    {% csrf_token %}
+
+    <!-- TITLE -->
+    <div>
+        <label class="block text-sm mb-2">Title</label>
+        <input type="text" name="title" value="{{ form.title.value|default:'' }}"
+               class="w-full p-3 bg-zinc-800 rounded-lg outline-none">
+    </div>
+
+    <!-- RELEASE DATE -->
+    <div>
+        <label class="block text-sm mb-2">Release Date</label>
+        <input type="date" name="release_date" value="{{ form.release_date.value|default:'' }}"
+               class="w-full p-3 bg-zinc-800 rounded-lg">
+    </div>
+
+    <!-- IMAGE -->
+    <div>
+        <label class="block text-sm mb-2">Image URL</label>
+        <input type="url" name="image" value="{{ form.image.value|default:'' }}"
+               class="w-full p-3 bg-zinc-800 rounded-lg">
+    </div>
+
+    <!-- DESCRIPTION -->
+    <div>
+        <label class="block text-sm mb-2">Description</label>
+        <textarea name="description"
+                  class="w-full p-3 bg-zinc-800 rounded-lg">{{ form.description.value|default:'' }}</textarea>
+    </div>
+
+    <!-- BUTTONS -->
+    <div class="flex gap-4">
+        <button type="submit"
+                class="flex-1 bg-violet-500 py-3 rounded-lg font-bold hover:opacity-90">
+            Save Game
+        </button>
+
+        <a href="{% url 'games:game_list' %}"
+           class="flex-1 text-center bg-zinc-700 py-3 rounded-lg">
+            Cancel
+        </a>
+    </div>
+
+</form>
+
+</main>
 </body>
 </html>

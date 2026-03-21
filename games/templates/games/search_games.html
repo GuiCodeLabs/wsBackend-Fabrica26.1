@@ -1,43 +1,93 @@
 <!DOCTYPE html>
-<html>
+<html class="dark" lang="en">
 <head>
-    <title>Buscar Jogos</title>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+
+    <title>Search Games</title>
 </head>
-<body>
 
-<h1>Buscar Jogos</h1>
+<body class="bg-background text-on-background font-body">
 
-<form method="get">
-    <input type="text" name="q" placeholder="Digite o nome do jogo">
-    <button type="submit">Buscar</button>
+<!-- NAV -->
+<nav class="fixed top-0 w-full z-50 bg-zinc-950/80 backdrop-blur-xl flex justify-between items-center px-8 h-20">
+    <div class="text-2xl font-bold text-violet-500">MyGameList</div>
+
+    <div class="flex gap-6">
+        <a href="{% url 'games:game_list' %}" class="text-zinc-400 hover:text-white">Library</a>
+        <a href="{% url 'games:search_games' %}" class="text-violet-400">Discover</a>
+    </div>
+</nav>
+
+<main class="pt-32 px-8 max-w-6xl mx-auto">
+
+<!-- 🔥 SEARCH FORM -->
+<form method="get" class="mb-12">
+    <div class="flex items-center bg-zinc-800 rounded-xl px-4 py-3">
+        <span class="material-symbols-outlined text-zinc-400">search</span>
+
+        <input
+            type="text"
+            name="q"
+            value="{{ request.GET.q }}"
+            placeholder="Search games..."
+            class="w-full bg-transparent px-4 outline-none text-white"
+        >
+
+        <button type="submit" class="text-sm bg-violet-500 px-4 py-2 rounded-lg">
+            Search
+        </button>
+    </div>
 </form>
 
-<hr>
+<!-- 🔥 RESULTS -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
 
-{% for game in games %}
-    <div>
-        <h3>{{ game.name }}</h3>
+    {% for game in games %}
+    <div class="bg-zinc-900 rounded-xl overflow-hidden">
 
         {% if game.background_image %}
-            <img src="{{ game.background_image }}" width="200">
+            <img src="{{ game.background_image }}" class="w-full h-64 object-cover">
         {% endif %}
 
-        <p>Lançamento: {{ game.released }}</p>
+        <div class="p-4">
+            <h3 class="font-bold text-lg">{{ game.name }}</h3>
 
-        <form method="post" action="{% url 'games:save_api_game' %}">
-            {% csrf_token %}
-            <input type="hidden" name="title" value="{{ game.name }}">
-            <input type="hidden" name="description" value="Jogo salvo pela API RAWG">
-            <input type="hidden" name="image" value="{{ game.background_image }}">
-            <input type="hidden" name="release_date" value="{{ game.released }}">
-            <input type="hidden" name="api_id" value="{{ game.id }}">
-            <button type="submit">Salvar na minha lista</button>
-        </form>
+            <p class="text-sm text-zinc-400">
+                {{ game.released }}
+            </p>
+
+            <!-- 🔥 SAVE BUTTON -->
+            <form method="post" action="{% url 'games:save_api_game' %}">
+                {% csrf_token %}
+
+                <input type="hidden" name="title" value="{{ game.name }}">
+                <input type="hidden" name="image" value="{{ game.background_image }}">
+                <input type="hidden" name="release_date" value="{{ game.released }}">
+                <input type="hidden" name="api_id" value="{{ game.id }}">
+                <input type="hidden" name="description" value="Game from API">
+
+                <button class="mt-4 w-full bg-violet-500 py-2 rounded-lg">
+                    Save
+                </button>
+            </form>
+
+        </div>
     </div>
-<hr>
-{% empty %}
-    <p>Nenhum resultado</p>
-{% endfor %}
 
+    {% empty %}
+        <p class="col-span-full text-center text-zinc-400">
+            Search for a game to begin
+        </p>
+    {% endfor %}
+
+</div>
+
+</main>
 </body>
 </html>
