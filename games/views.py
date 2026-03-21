@@ -2,8 +2,8 @@ import os
 import requests
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from .models import Game
-from .forms import GameForm
+from .models import Game, Review
+from .forms import GameForm, ReviewForm
 
 API_KEY = os.getenv('RAWG_API_KEY')
 
@@ -79,6 +79,7 @@ def save_api_game(request):
         image = request.POST.get('image')
         release_date = request.POST.get('release_date')
         api_id = request.POST.get('api_id')
+        status = request.POST.get('status', 'backlog') # Pega o status ou usa backlog como padrão
 
         game_exists = Game.objects.filter(user=request.user, api_id=api_id).exists()
 
@@ -90,6 +91,24 @@ def save_api_game(request):
                 image=image or '',
                 release_date=release_date if release_date else None,
                 api_id=api_id if api_id else None,
+                status=status
             )
 
         return redirect('games:game_list')
+
+@login_required
+def add_review(request, id):
+    game = get_object_or_404(Game, id=id, user=request.user)
+
+    if request.method == 'POST':
+        form = ReviewForm(request.POST)
+        if form.is_valid():
+            review = form.save(commit=False)
+            review.game = game
+            review.user = request.user
+            review.save()
+            return redirect('games:game_detail', id=game.id)
+    else:
+        form = ReviewForm()
+
+    return render(request, 'games/add_review.html', {'form': form, 'game': game})
