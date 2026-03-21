@@ -1,8 +1,9 @@
 from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth.decorators import login_required
 from .models import Game
 from .forms import GameForm
 
-
+@login_required
 def game_list(request):
     games = Game.objects.all()
     return render(request, 'games/game_list.html', {'games': games})
