@@ -6,6 +6,7 @@ from django.contrib.auth import login
 from django.contrib.auth.forms import UserCreationForm
 from .models import Game, Review
 from .forms import GameForm, ReviewForm
+from deep_translator import GoogleTranslator
 
 API_KEY = os.getenv('RAWG_API_KEY')
 
@@ -77,7 +78,6 @@ def search_games(request):
 def save_api_game(request):
     if request.method == 'POST':
         title = request.POST.get('title')
-        description = request.POST.get('description')
         image = request.POST.get('image')
         release_date = request.POST.get('release_date')
         api_id = request.POST.get('api_id')
@@ -86,10 +86,30 @@ def save_api_game(request):
         game_exists = Game.objects.filter(user=request.user, api_id=api_id).exists()
 
         if not game_exists:
+            # Busca a descrição completa na API usando o ID
+            description = ''
+            if api_id:
+                try:
+                    detail_url = f"https://api.rawg.io/api/games/{api_id}?key={API_KEY}"
+                    detail_response = requests.get(detail_url)
+                    if detail_response.status_code == 200:
+                        detail_data = detail_response.json()
+                        # description_raw vem sem tags HTML, o que é melhor para seu design
+                        description_en = detail_data.get('description_raw', '') or detail_data.get('description', '')
+                        
+                        if description_en:
+                            try:
+                                description = GoogleTranslator(source='auto', target='pt').translate(description_en)
+                            except Exception as e:
+                                print(f"Erro na tradução: {e}")
+                                description = description_en
+                except Exception as e:
+                    print(f"Erro ao buscar detalhes: {e}")
+
             Game.objects.create(
                 user=request.user,
                 title=title,
-                description=description or '',
+                description=description,
                 image=image or '',
                 release_date=release_date if release_date else None,
                 api_id=api_id if api_id else None,

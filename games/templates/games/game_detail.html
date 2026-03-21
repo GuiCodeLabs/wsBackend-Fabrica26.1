@@ -184,9 +184,16 @@
                     <h2 class="font-headline text-2xl font-bold mb-4">Descrição</h2>
 
                     {% if game.description %}
-                        <p class="text-on-surface-variant leading-8 text-base">
-                            {{ game.description }}
-                        </p>
+                        <div id="description-wrapper" class="relative max-h-40 overflow-hidden transition-all duration-700 ease-in-out">
+                            <p class="text-on-surface-variant leading-8 text-base">
+                                {{ game.description }}
+                            </p>
+                            <div id="description-overlay" class="absolute bottom-0 left-0 w-full h-24 bg-gradient-to-t from-surface-container-low to-transparent pointer-events-none transition-opacity duration-300"></div>
+                        </div>
+                        <button id="description-toggle-btn" class="mt-4 text-primary font-bold text-sm uppercase tracking-wide hover:text-white transition-colors flex items-center gap-1 hidden">
+                            <span>Ler mais</span>
+                            <span class="material-symbols-outlined text-lg">expand_more</span>
+                        </button>
                     {% else %}
                         <p class="text-on-surface-variant leading-8 text-base">
                             Nenhuma descrição disponível.
@@ -253,5 +260,41 @@
         </div>
     </footer>
 
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const descWrapper = document.getElementById('description-wrapper');
+            const descOverlay = document.getElementById('description-overlay');
+            const toggleBtn = document.getElementById('description-toggle-btn');
+            
+            if (descWrapper && toggleBtn) {
+                // Verifica automaticamente se o texto ultrapassa o limite (max-h-40 = 160px)
+                if (descWrapper.scrollHeight > descWrapper.offsetHeight) {
+                    toggleBtn.classList.remove('hidden');
+                } else {
+                    // Se o texto for pequeno, remove o overlay e o limite
+                    descOverlay.style.display = 'none';
+                    descWrapper.classList.remove('max-h-40');
+                }
+
+                let isExpanded = false;
+                toggleBtn.addEventListener('click', () => {
+                    isExpanded = !isExpanded;
+                    if (isExpanded) {
+                        descWrapper.classList.remove('max-h-40');
+                        descWrapper.classList.add('max-h-[2000px]'); // Valor alto para permitir a animação
+                        descOverlay.classList.add('opacity-0');
+                        toggleBtn.querySelector('span:first-child').innerText = 'Ler menos';
+                        toggleBtn.querySelector('.material-symbols-outlined').innerText = 'expand_less';
+                    } else {
+                        descWrapper.classList.remove('max-h-[2000px]');
+                        descWrapper.classList.add('max-h-40');
+                        descOverlay.classList.remove('opacity-0');
+                        toggleBtn.querySelector('span:first-child').innerText = 'Ler mais';
+                        toggleBtn.querySelector('.material-symbols-outlined').innerText = 'expand_more';
+                    }
+                });
+            }
+        });
+    </script>
 </body>
 </html>
