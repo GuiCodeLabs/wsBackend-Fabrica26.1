@@ -23,3 +23,12 @@ class GameList(models.Model):
 
     def __str__(self):
         return f"{self.user} - {self.game} ({self.status})" 
+
+class Review(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    game = models.ForeignKey(Game, on_delete=models.CASCADE)
+    rating = models.IntegerField()
+    comment = models.TextField(blank=True)
+
+    def __str__(self):
+        return f"{self.user} - {self.game} ({self.rating})"
