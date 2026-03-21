@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html class="dark" lang="pt-br">
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Criar Conta | MyGameList</title>
+
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#b6a0ff",
+                        "surface": "#0e0e0e",
+                    },
+                    fontFamily: {
+                        "headline": ["Space Grotesk"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    }
+                },
+            },
+        }
+    </script>
+
+    <style>
+        .neon-glow:hover { box-shadow: 0 0 40px rgba(182, 160, 255, 0.15); }
+        .editorial-gradient { background: radial-gradient(circle at 50% -20%, #1a1a1a 0%, #0e0e0e 100%); }
+    </style>
+</head>
+<body class="bg-surface text-white font-body antialiased selection:bg-primary selection:text-black">
+    <div class="fixed inset-0 editorial-gradient -z-10"></div>
+
+    <main class="min-h-screen flex flex-col items-center justify-center p-6">
+        <div class="mb-12 text-center">
+            <h1 class="font-headline text-4xl font-bold tracking-tighter text-primary uppercase mb-2">
+                MyGameList
+            </h1>
+            <p class="font-label text-zinc-400 text-xs tracking-[0.2em] uppercase">
+                Comece sua Jornada
+            </p>
+        </div>
+
+        <div class="w-full max-w-md bg-[#131313] p-8 md:p-12 rounded-xl transition-all duration-500 neon-glow">
+            <div class="mb-8">
+                <h2 class="font-headline text-3xl font-semibold tracking-tight text-white mb-2">
+                    Criar Conta
+                </h2>
+                <p class="text-zinc-400 text-sm">
+                    Preencha os dados para criar seu cofre digital.
+                </p>
+            </div>
+
+            <form method="post" class="space-y-5">
+                {% csrf_token %}
+
+                {% if form.non_field_errors %}
+                    <div class="rounded-lg bg-red-500/10 border border-red-500/30 px-4 py-3 text-sm text-red-300">
+                        {% for error in form.non_field_errors %}
+                            <p>{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+
+                {% for field in form %}
+                <div class="space-y-1">
+                    <label for="{{ field.id_for_label }}" class="block font-label text-xs font-medium uppercase tracking-wider text-zinc-400">
+                        {{ field.label }}
+                    </label>
+
+                    <div class="relative">
+                        <input
+                            type="{% if field.name == 'password1' or field.name == 'password2' or field.field.widget.input_type == 'password' %}password{% else %}{{ field.field.widget.input_type|default:'text' }}{% endif %}"
+                            name="{{ field.name }}"
+                            id="{{ field.id_for_label }}"
+                            value="{% if field.field.widget.input_type != 'password' %}{{ field.value|default_if_none:'' }}{% endif %}"
+                            class="w-full bg-[#262626] border rounded-lg py-3 px-4 text-white placeholder:text-zinc-600 transition-all focus:ring-1 focus:bg-[#2c2c2c] {% if field.errors %}border-red-500 focus:ring-red-400/50{% else %}border-transparent focus:ring-cyan-400/50{% endif %}"
+                            autocomplete="{% if field.name == 'username' %}username{% elif field.name == 'password1' %}new-password{% elif field.name == 'password2' %}new-password{% else %}off{% endif %}"
+                        />
+
+                        {% if field.value and not field.errors %}
+                            <span class="absolute right-3 top-1/2 -translate-y-1/2 text-green-400 font-bold">
+                                ✔
+                            </span>
+                        {% endif %}
+                    </div>
+
+                    {% if field.errors %}
+                        <div class="mt-1">
+                            {% for error in field.errors %}
+                                <p class="text-xs text-red-400">{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+                {% endfor %}
+
+                <div class="pt-4">
+                    <button
+                        type="submit"
+                        class="w-full bg-gradient-to-br from-[#b6a0ff] to-[#7e51ff] text-black font-headline font-bold text-lg py-4 rounded-full shadow-lg shadow-purple-500/10 hover:shadow-purple-500/25 hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 uppercase tracking-widest"
+                    >
+                        Cadastrar
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <div class="mt-8 text-center">
+            <p class="text-zinc-400 text-sm">
+                Já tem uma conta?
+                <a href="{% url 'login' %}" class="text-primary hover:text-white underline decoration-primary/30 underline-offset-4 transition-colors">
+                    Entrar
+                </a>
+            </p>
+        </div>
+    </main>
+</body>
+</html>

@@ -2,6 +2,8 @@ import os
 import requests
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth import login
+from django.contrib.auth.forms import UserCreationForm
 from .models import Game, Review
 from .forms import GameForm, ReviewForm
 
@@ -112,3 +114,14 @@ def add_review(request, id):
         form = ReviewForm()
 
     return render(request, 'games/add_review.html', {'form': form, 'game': game})
+
+def register(request):
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            login(request, user)
+            return redirect('games:game_list')
+    else:
+        form = UserCreationForm()
+    return render(request, 'registration/register.html', {'form': form})

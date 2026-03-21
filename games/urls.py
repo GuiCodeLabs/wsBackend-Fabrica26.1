@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import game_list, game_detail, create_game, update_game, delete_game, search_games, save_api_game, add_review
+from .views import game_list, game_detail, create_game, update_game, delete_game, search_games, save_api_game, add_review, register
 
 app_name = 'games'
 
@@ -12,4 +12,5 @@ urlpatterns = [
     path('search/', search_games, name='search_games'),
     path('save-api-game/', save_api_game, name='save_api_game'),
     path('game/<int:id>/review/', add_review, name='add_review'),
+    path('register/', register, name='register'),
 ]
