@@ -12,6 +12,18 @@ Sistema web completo para gerenciamento de biblioteca de jogos pessoais. O **MyG
 
 ---
 
+## 🎯 Escopo e Requisitos
+
+Este projeto foi desenvolvido atendendo aos requisitos técnicos propostos, demonstrando competências em desenvolvimento Full Stack com foco em Backend:
+
+*   ✅ **CRUD Completo**: Implementação de criação, leitura, atualização e exclusão de registros.
+*   ✅ **Autenticação**: Controle de acesso com login, registro e rotas protegidas (`@login_required`).
+*   ✅ **Integração de API**: Consumo da API externa RAWG para popular o banco de dados.
+*   ✅ **Banco de Dados Relacional**: Uso de PostgreSQL em ambiente de produção/container.
+*   ✅ **DevOps**: Ambiente configurado com Docker e orquestrado via Docker Compose.
+
+---
+
 ## 🚀 Funcionalidades
 
 *   🔐 **Autenticação Completa**: Sistema de cadastro, login e logout de usuários.
@@ -77,6 +89,59 @@ Sistema web completo para gerenciamento de biblioteca de jogos pessoais. O **MyG
 | `POST` | `/accounts/logout/` | Realiza o logout do usuário. |
 
 ---
+
+## 📁 Estrutura do Projeto
+
+```
+├── 📁 config
+│   ├── 🐍 __init__.py
+│   ├── 🐍 asgi.py
+│   ├── 🐍 settings.py
+│   ├── 🐍 urls.py
+│   └── 🐍 wsgi.py
+├── 📁 games
+│   ├── 📁 migrations
+│   │   ├── 🐍 0001_initial.py
+│   │   ├── 🐍 0002_game_api_id_game_description_game_image_and_more.py
+│   │   ├── 🐍 0003_gamelist.py
+│   │   ├── 🐍 0004_review.py
+│   │   ├── 🐍 0005_game_user.py
+│   │   ├── 🐍 0006_alter_review_game.py
+│   │   ├── 🐍 0007_game_personal_rating_game_status.py
+│   │   └── 🐍 __init__.py
+│   ├── 📁 templates
+│   │   ├── 📁 games
+│   │   │   ├── 🌐 add_review.html
+│   │   │   ├── 🌐 create_game.html
+│   │   │   ├── 🌐 delete_game.html
+│   │   │   ├── 🌐 game_detail.html
+│   │   │   ├── 🌐 game_list.html
+│   │   │   ├── 🌐 search_games.html
+│   │   │   └── 🌐 update_game.html
+│   │   └── 📁 registration
+│   │       ├── 🌐 login.html
+│   │       └── 🌐 register.html
+│   ├── 🐍 __init__.py
+│   ├── 🐍 admin.py
+│   ├── 🐍 apps.py
+│   ├── 🐍 forms.py
+│   ├── 🐍 models.py
+│   ├── 🐍 tests.py
+│   ├── 🐍 urls.py
+│   └── 🐍 views.py
+├── 📁 images
+│   ├── 🖼️ biblioteca.png
+│   ├── 🖼️ busca.png
+│   └── 🖼️ detalhes_do_jogo.png
+├── ⚙️ .dockerignore
+├── ⚙️ .gitignore
+├── 📝 README.md
+├── ⚙️ docker-compose.yml
+├── 🐳 dockerfile
+├── 📄 entrypoint.sh
+├── 🐍 manage.py
+└── 📄 requirements.txt
+```
 
 ## ⚙️ Instalação e Execução
 
@@ -158,7 +223,7 @@ O projeto possui configuração para execução com Docker.
 ### Executar com Docker:
 
 ```bash
-docker compose up
+docker compose up --build
 ```
 
 ---
