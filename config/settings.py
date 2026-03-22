@@ -81,7 +81,7 @@ if os.getenv('POSTGRES_DB'):
             'NAME': os.getenv('POSTGRES_DB'),
             'USER': os.getenv('POSTGRES_USER'),
             'PASSWORD': os.getenv('POSTGRES_PASSWORD'),
-            'HOST': 'db',  # Nome do serviço no docker-compose
+            'HOST': os.getenv('POSTGRES_HOST', 'db'),
             'PORT': '5432',
         }
     }
